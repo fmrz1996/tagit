@@ -1,0 +1,47 @@
+body {
+  min-height: 100vh;
+}
+
+header .navbar {
+  height: 80px;
+}
+
+.navbar-tagit .nav-item.active > .nav-link {
+  color: #fff;
+  background-color: #0099ff;
+  border-radius: .5rem;
+}
+
+.main {
+  min-height: 45vh;
+}
+
+.logo-tagit {
+  width: 25%;
+}
+
+.img-leader {
+  max-width: 328px;
+  max-height: 328px;
+}
+
+.animated {
+  -webkit-animation-duration: 0.4s;
+  animation-duration: 0.4s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation-name: fadeIn;
+}

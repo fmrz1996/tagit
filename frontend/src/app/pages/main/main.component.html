@@ -1,0 +1,40 @@
+<section class="pt-4 animated fadeIn main">
+  <div class="container">
+    <form [formGroup]="formNewTag" autocomplete="off" class="pt-2" (ngSubmit)="createDemand()">
+      <div class="row">
+        <div class="col-12">
+          <div class="form-group">
+            <label for="ministery">Para comenzar, selecciona una institución:</label>
+            <select class="form-control select-ministery" id="ministery" formControlName="ministery" (change)="getTags()">
+              <option value="" hidden selected>Seleciona un ministerio</option>
+              <option *ngFor="let ministery of ministeries" [ngValue]="ministery">{{ ministery.name }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="form-group pt-4" *ngIf="formNewTag.controls.ministery.status === 'VALID'">
+            <div class="info-ministery text-center">
+              <h3>{{ formNewTag.value.ministery.name }}</h3>
+              <img class="img-leader mt-3 mb-2" src="assets/ministries/{{formNewTag.value.ministery.image}}">
+              <h6>{{ formNewTag.value.ministery.leader }}</h6>
+            </div>
+          </div>
+          <div class="form-group" *ngIf="formNewTag.controls.ministery.status === 'VALID'">
+            <label for="tag">Escribe tu demanda:</label>
+            <input class="form-control" type="text" placeholder="Ejemplo: Aumentar Sueldo Minimo" formControlName="tag">
+            <!-- <select class="form-control" id="tag" formControlName="tag">
+              <option *ngFor="let tag of tags">{{ tag }}</option>
+            </select> -->
+          </div>
+          <div class="form-group" *ngIf="formNewTag.controls.ministery.status === 'VALID'">
+            <label for="tag">Ingresa tu email:</label>
+            <input class="form-control" type="email" id="email" formControlName="email" placeholder="Escribe tu email">
+          </div>
+          <button [disabled]="formNewTag.invalid" type="submit" class="btn btn-primary d-block mx-auto mb-5">Ingresar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
