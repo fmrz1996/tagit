@@ -22,17 +22,33 @@
             </div>
           </div>
           <div class="form-group" *ngIf="formNewTag.controls.ministery.status === 'VALID'">
-            <label for="tag">Escribe tu demanda:</label>
-            <input class="form-control" type="text" placeholder="Ejemplo: Aumentar Sueldo Minimo" formControlName="tag">
-            <!-- <select class="form-control" id="tag" formControlName="tag">
-              <option *ngFor="let tag of tags">{{ tag }}</option>
-            </select> -->
-          </div>
+            <label for="tag">Ingresa tu demanda:</label>
+            <div class="ng-autocomplete">
+              <ng-autocomplete
+                [data]="tags"
+                [placeHolder]="'Escribe tu demanda'"
+                [itemTemplate]="itemTemplate"
+                formControlName="tag">
+              </ng-autocomplete>
+              <ng-template #itemTemplate let-item>
+              <a [innerHTML]="item"></a>
+              </ng-template>
+              </div>
+            </div>
           <div class="form-group" *ngIf="formNewTag.controls.ministery.status === 'VALID'">
             <label for="tag">Ingresa tu email:</label>
             <input class="form-control" type="email" id="email" formControlName="email" placeholder="Escribe tu email">
           </div>
           <button [disabled]="formNewTag.invalid" type="submit" class="btn btn-primary d-block mx-auto mb-5">Ingresar</button>
+          <swal
+            #successSwal
+            title="Tu demanda ha sido ingresada exitosamente!"
+            toast="true"
+            position="top-end"
+            timer="6000"
+            icon="success"
+            [swalOptions]="{ showConfirmButton: false }">
+          </swal>
         </div>
       </div>
     </form>

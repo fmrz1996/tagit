@@ -25,10 +25,15 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-      return Tag::create([
-        'name' => $request['name'],
-        'ministery_id' => $request['ministery_id'],
-      ]);
+      $tag = Tag::where('name', $request['name'])->first();
+      if(!$tag) {
+        return Tag::create([
+          'name' => $request['name'],
+          'ministery_id' => $request['ministery_id'],
+        ]);
+      } else {
+        return $tag;
+      }
     }
 
     /**

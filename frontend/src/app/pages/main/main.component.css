@@ -1,0 +1,28 @@
+.ng-autocomplete {
+  width: 100%;
+}
+
+/deep/ .autocomplete-container {
+  box-shadow: none!important;
+}
+
+/deep/ .autocomplete-container .input-container input {
+  border: 1px solid #ced4da!important;
+  border-radius: .25rem!important;
+  font-size: 1rem!important;
+  padding: .375rem .75rem!important;
+  transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+/deep/ .autocomplete-container .input-container input:focus {
+  border: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+  outline: 0;
+}
+
+/deep/ .autocomplete-container .suggestions-container ul li a {
+  cursor: default!important;
+  padding: 5px 15px!important;
+  min-height: 1.2em!important;
+  font-size: 1rem!important;
+}
