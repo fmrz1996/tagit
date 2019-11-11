@@ -9,7 +9,6 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './shared/header/header.component';
 import { FooterComponent } from './shared/footer/footer.component';
-import { WordcloudComponent } from './pages/wordcloud/wordcloud.component';
 import { MainComponent } from './pages/main/main.component';
 import { NavComponent } from './shared/nav/nav.component';
 
@@ -18,7 +17,6 @@ import { NavComponent } from './shared/nav/nav.component';
     AppComponent,
     HeaderComponent,
     FooterComponent,
-    WordcloudComponent,
     MainComponent,
     NavComponent
   ],
