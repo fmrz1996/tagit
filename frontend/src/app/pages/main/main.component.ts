@@ -1,3 +1,17 @@
+// Requisitos:
+// - Implementar loading
+// - Aumentar en alto del div que contenga la info de lider y canvas/lista
+// - Wordcloud debe mantener proporciones adecuadas para no salirse del canvas
+// - Limitar palabras maximas a 4 de la demanda, y 40 caracteres
+// - Validar email
+// - Que solo aparescan sugerencias cuando se este escribiendo la demanda
+// - Cuando se ingresa la demanda, alertar con un modal de swwetalerts2
+// - Redes sociales en el modal, para compartir resultado
+// - Que se vean los datos de la demanda, en el link
+// - Boton volver a la pagina principal
+// - Que los wordclouds esten renderizados sobre pancartas
+// - Que el wordcloud concentre solo las palabras claves
+
 import { Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
@@ -41,18 +55,27 @@ export class MainComponent {
 
   getTags() {
     this.tags = [];
-    this.httpClient.get(this.API_ENDPOINT + '/tag/ministery/' + this.formNewTag.value.ministery.id).subscribe((data:any) => {
+    if (this.formNewTag.value.ministery.id === 1) {
+      this.httpClient.get(this.API_ENDPOINT + '/tag').subscribe((data:any) => {
       for (let tag of data) {
           this.tags.push(tag.name);
       }
       this.getDemands();
-    })
+      })
+    } else {
+      this.httpClient.get(this.API_ENDPOINT + '/tag/ministery/' + this.formNewTag.value.ministery.id).subscribe((data:any) => {
+        for (let tag of data) {
+          this.tags.push(tag.name);
+        }
+        this.getDemands();
+      })
+    }
   }
 
-  getDemands(){
+  getDemands() {
     this.loading = true;
     this.list = [];
-    if (this.formNewTag.value.ministery.id == 0) {
+    if (this.formNewTag.value.ministery.id === 1) {
       this.httpClient.get(this.API_ENDPOINT + '/demand').subscribe((data:any) => {
         this.demands = data;
         for (let item of this.demands) {
@@ -75,14 +98,13 @@ export class MainComponent {
   createDemand() {
     this.tagsService.saveTag({'name': this.formNewTag.value.tag, 'ministery_id': this.formNewTag.value.ministery.id}).subscribe((data:any) => {
       this.tagDemand = data.id;
-      this.tagsService.saveDemand({'email': this.formNewTag.value.email, 'tag_id': this.tagDemand}).subscribe((data:any) => {
-        console.log(data);
-        this.myForm.resetForm();
+      this.tagsService.saveDemand({'email': this.formNewTag.value.email, 'tag_id': this.tagDemand}).subscribe((_data:any) => {
+        this.formNewTag.controls['tag'].reset();
       });
     });
   }
 
-  createCanvas(){
+  createCanvas() {
     WordCloud(document.getElementById('my_canvas'), {
         list: this.list,
         gridSize: Math.round(16 * $('#my_canvas').width() / 700),
