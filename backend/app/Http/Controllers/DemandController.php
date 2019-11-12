@@ -18,7 +18,7 @@ class DemandController extends Controller
         return Demand::select('tag_id', 'tags.name', DB::raw('count(*) as count'))
                     ->join('tags', 'tags.id', '=', 'tag_id')
                     ->orderBy('count', 'desc')
-                    ->groupBy('tag_id')->get();
+                    ->groupBy('tag_id')->take(10)->get();
     }
 
     /**
@@ -37,11 +37,13 @@ class DemandController extends Controller
 
     public function showByMinistery($id)
     {
-      return Demand::select('tag_id', 'tags.name', DB::raw('count(*) as count'))
+      $query = Demand::select('tag_id', 'tags.name', DB::raw('count(*) as count'))
                   ->where('ministeries.id', $id)
                   ->join('tags', 'tags.id', '=', 'tag_id')
                   ->join('ministeries', 'ministeries.id', '=', 'tags.ministery_id')
                   ->orderBy('count', 'desc')
-                  ->groupBy('tag_id')->get();
+                  ->groupBy('tag_id')->take(10)->get();
+
+      return $query;
     }
 }

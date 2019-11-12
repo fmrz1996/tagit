@@ -1,6 +1,11 @@
-<section class="pt-4 animated fadeIn main">
-  <div class="container">
-    <form [formGroup]="formNewTag" class="pt-2" (ngSubmit)="createDemand()">
+<section class="pt-4 main">
+  <div *ngIf="initialLoading" class="text-center loading">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+  <div *ngIf="!initialLoading" class="container animated fadeIn">
+    <form [formGroup]="formNewTag" class="pt-2" autocomplete="off" (ngSubmit)="createDemand()" id="formNewTag">
       <div class="row">
         <div class="col-12">
           <div class="form-group">
@@ -12,18 +17,19 @@
           </div>
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-4">
+      <h1 id="infoMinistryTitle" class="text-center pt-3">{{ formNewTag.value.ministery.name }}</h1>
+      <div class="row info-ministry">
+        <div class="col-lg-4 col-md-12">
           <div class="form-group pt-4" *ngIf="formNewTag.controls.ministery.status === 'VALID'">
             <div class="info-ministery text-center">
-              <img class="img-leader mt-3 mb-2" src="assets/ministries/{{formNewTag.value.ministery.image}}">
+              <img class="img-leader mb-2" src="assets/ministries/{{formNewTag.value.ministery.image}}">
               <h6>{{ formNewTag.value.ministery.leader }}</h6>
             </div>
           </div>
         </div>
-        <div class="col-md-8">
-          <div *ngIf="formNewTag.controls.ministery.status === 'VALID'" class="container animated fadeIn pt-4">
-            <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <div class="col-lg-8 col-md-12">
+          <div *ngIf="formNewTag.controls.ministery.status === 'VALID'" class="container pt-4">
+            <ul class="nav nav-pills" id="myTab" role="tablist">
               <li class="nav-item">
                 <a class="nav-link active" id="wordcloud-tab" data-toggle="tab" href="#wordcloud" role="tab" aria-controls="wordcloud" aria-selected="true">Wordcloud</a>
               </li>
@@ -31,36 +37,32 @@
                 <a class="nav-link" id="list-tab" data-toggle="tab" href="#list" role="tab" aria-controls="list" aria-selected="false">Lista</a>
               </li>
             </ul>
-            <section class="pt-4">
-              <div class="tab-content" id="myTabContent">
-                <div class="tab-pane show active" id="wordcloud" role="tabpanel" aria-labelledby="wordcloud-tab">
-                  <div class="row mt-4 mb-4">
-                    <div class="col-12">
-                      <div *ngIf="!loading" class="word-cloud">
-                        <canvas id="my_canvas" class="canvas d-block mx-auto" width="700" height="250"></canvas>
-                      </div>
+            <div class="tab-content" id="myTabContent">
+              <div class="tab-pane show active" id="wordcloud" role="tabpanel" aria-labelledby="wordcloud-tab">
+                <div class="row">
+                  <div class="col-12">
+                    <div *ngIf="!loading" class="word-cloud">
+                      <canvas id="my_canvas" class="canvas d-block mx-auto" width="700" height="350"></canvas>
                     </div>
                   </div>
                 </div>
-                <div class="tab-pane" id="list" role="tabpanel" aria-labelledby="list-tab">
-                  <table class="table table-hover mt-4">
-                    <thead>
-                      <tr>
-                        <th>Demanda</th>
-                        <th>Votos</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let demand of demands">
-                        <td>{{ demand.name }}</td>
-                        <td>{{ demand.count }}</td>
-                      </tr>
-                      <tr>
-                      </tbody>
-                    </table>
-                  </div>
+              </div>
+              <div class="tab-pane" id="list" role="tabpanel" aria-labelledby="list-tab">
+                <table class="table table-hover mt-2 table-sm">
+                  <tbody>
+                    <tr>
+                      <th>Demanda</th>
+                      <th>Votos</th>
+                    </tr>
+                    <tr *ngFor="let demand of demands">
+                      <td>{{ demand.name }}</td>
+                      <td>{{ demand.count }}</td>
+                    </tr>
+                    <tr>
+                    </tbody>
+                  </table>
                 </div>
-            </section>
+              </div>
           </div>
         </div>
       </div>
@@ -70,10 +72,15 @@
             <label for="tag">Ingresa tu demanda:</label>
             <div class="ng-autocomplete">
               <ng-autocomplete
+                #auto
+                (inputFocused)="onFocused($event)"
+                (inputCleared)="onCleared($event)"
                 [data]="tags"
-                [placeHolder]="'Escribe tu demanda'"
+                [placeHolder]="'Escribe tu demanda (máximo 4 palabras, 50 caracteres)'"
                 [itemTemplate]="itemTemplate"
-                formControlName="tag">
+                formControlName="tag"
+                [minQueryLength]="2"
+                max-word-count>
               </ng-autocomplete>
               <ng-template #itemTemplate let-item>
                 <a [innerHTML]="item"></a>
@@ -82,17 +89,34 @@
           </div>
           <div class="form-group" *ngIf="formNewTag.controls.ministery.status === 'VALID'">
             <label for="tag">Ingresa tu email:</label>
-            <input class="form-control" type="email" id="email" formControlName="email" placeholder="Escribe tu email">
+            <input class="form-control" type="text" id="email" formControlName="email" placeholder="Escribe tu email" required>
           </div>
             <button [disabled]="formNewTag.invalid" type="submit" class="btn btn-primary d-block mx-auto mb-5">Ingresar</button>
             <swal
               #successSwal
-              title="Tu demanda ha sido ingresada exitosamente!"
-              toast="true"
-              position="top-end"
-              timer="6000"
-              icon="success"
-              [swalOptions]="{ showConfirmButton: false }">
+              title="¡Gracias por tu voto!"
+              showCancelButton="true"
+              html="
+              <div class='row mt-3'>
+                <div class='col-10 pr-0'>
+                  <img class='img-modal' src='assets/ministries/{{formNewTag.value.ministery.image}}'>
+                </div>
+                <div class='col-2 d-block my-auto pl-0'>
+                    <div class='rrss'>
+                      <a target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse' class='fb-xfbml-parse-ignore'><img src='assets/facebook.png'></a>
+                      <a target='_blank' href='https://twitter.com/share' data-lang='es'><img src='assets/twitter.png'></a>
+                      <a href='#'><img src='assets/instagram.png'></a>
+                      <a href='#'><img src='assets/whatsapp.png'></a>
+                    </div>
+                </div>
+              </div>
+              <div class='row mt-4'>
+                <div class='col-12'>
+                  <p>Estimado <b>{{ formNewTag.value.ministery.name }}:</b> Chile necesita un cambio urgente, y <b>{{ formNewTag.value.tag }}</b> es una priodidad.<p>
+                </div>
+              </div>"
+              confirmButtonText="¡Seguir votando!"
+              cancelButtonText="Volver atrás">
             </swal>
           </div>
         </div>

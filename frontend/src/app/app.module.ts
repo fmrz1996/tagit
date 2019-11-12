@@ -12,13 +12,16 @@ import { FooterComponent } from './shared/footer/footer.component';
 import { MainComponent } from './pages/main/main.component';
 import { NavComponent } from './shared/nav/nav.component';
 
+import { MaxWordCountValidator } from './max-word-count-validator';
+
 @NgModule({
   declarations: [
     AppComponent,
     HeaderComponent,
     FooterComponent,
     MainComponent,
-    NavComponent
+    NavComponent,
+    MaxWordCountValidator
   ],
   imports: [
     BrowserModule,

@@ -6,6 +6,10 @@ header .navbar {
   height: 80px;
 }
 
+.loading {
+  margin: 100px;
+}
+
 .navbar-tagit .nav-item.active > .nav-link {
   color: #fff;
   background-color: #0099ff;
@@ -17,12 +21,16 @@ header .navbar {
 }
 
 .logo-tagit {
-  width: 25%;
+  max-width: 100%;
 }
 
 .img-leader {
   max-width: 328px;
   max-height: 328px;
+}
+
+.img-modal {
+  max-width: 85%;
 }
 
 .animated {
@@ -44,4 +52,21 @@ header .navbar {
 
 .fadeIn {
   animation-name: fadeIn;
+}
+
+#my_canvas {
+  opacity: 0;
+}
+
+.rrss a {
+  display: block;
+  margin-bottom: 24px;
+}
+
+.rrss a:last-child {
+  margin-bottom: 0;
+}
+
+.rrss a img {
+  max-width: 48px;
 }

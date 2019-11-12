@@ -9,4 +9,9 @@ class Ministery extends Model
   protected $fillable = [
       'name', 'leader', 'image',
   ];
+
+  public function tags()
+  {
+      return $this->hasMany('App\Tag');
+  }
 }
