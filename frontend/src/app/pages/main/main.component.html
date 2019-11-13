@@ -17,13 +17,13 @@
           </div>
         </div>
       </div>
-      <h1 id="infoMinistryTitle" class="text-center pt-3 d-none d-lg-block">{{ formNewTag.value.ministery.name }}</h1>
+      <h1 class="text-center pt-3">Top 10 demandas <span id="infoMinistryTitle" class="text-muted">{{ formNewTag.value.ministery.name }}</span></h1>
       <div class="row info-ministry">
         <div class="col-lg-4 col-md-12">
           <div class="form-group pt-4" *ngIf="formNewTag.controls.ministery.status === 'VALID'">
             <div class="info-ministery text-center">
               <img class="img-leader mb-2" src="assets/ministries/{{formNewTag.value.ministery.image}}">
-              <h6>{{ formNewTag.value.ministery.leader }}</h6>
+              <span>{{ formNewTag.value.ministery.leader }}</span>
             </div>
           </div>
         </div>
@@ -76,7 +76,7 @@
                 (inputFocused)="onFocused($event)"
                 (inputCleared)="onCleared($event)"
                 [data]="tags"
-                [placeHolder]="'Escribe tu demanda (máximo 4 palabras, 50 caracteres)'"
+                [placeHolder]="'Escribe tu demanda (máximo 4 palabras, 40 caracteres)'"
                 [itemTemplate]="itemTemplate"
                 formControlName="tag"
                 [minQueryLength]="2"
@@ -103,9 +103,9 @@
                 </div>
                 <div class='col-2 d-block my-auto pl-0'>
                     <div class='rrss'>
-                      <a target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=https://www.tagit.cl&quote=Acabo de hacer mi voto de {{ formNewTag.value.tag }} en Tagit. ¡Chile necesita un cambio!' class='fb-xfbml-parse-ignore'><img src='assets/facebook.png'></a>
-                      <a target='_blank' href='https://twitter.com/share?text=Acabo de hacer mi voto de {{ formNewTag.value.tag }} en Tagit. ¡Chile necesita un cambio!&url=https://www.tagit.cl' data-lang='es'><img src='assets/twitter.png'></a>
-                      <a href='whatsapp://send?text=Acabo de hacer mi voto de {{ formNewTag.value.tag }} en Tagit. ¡Chile necesita un cambio! https://www.tagit.cl'><img src='assets/whatsapp.png'></a>
+                      <a target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=https://www.tagit.cl&quote=Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta en Tagit!' class='fb-xfbml-parse-ignore'><img src='assets/facebook.png'></a>
+                      <a target='_blank' href='https://twitter.com/share?text=Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta en Tagit!&url=https://www.tagit.cl' data-lang='es'><img src='assets/twitter.png'></a>
+                      <a href='Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta en Tagit! https://www.tagit.cl'><img src='assets/whatsapp.png'></a>
                     </div>
                 </div>
               </div>

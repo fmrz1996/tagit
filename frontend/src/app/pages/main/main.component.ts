@@ -1,10 +1,14 @@
 // Requisitos:
 // - Cuando cambio de ministerio, en el panel de lista, el wordcloud se tiene que ver
 // - Filtrar palabras ofensivas
-// - Que el wordcloud concentre solo las palabras claves
-// ? Que se pueda cambiar vista de wordcloud, con un solo boton en vez del menú (nose si es necesario)
-// ? Que se vean los datos de la demanda, en el link (no se entiendo)
-// ? Que los wordclouds esten renderizados sobre pancartas (hay poco espacio para mostrar pancartas con los wordcloud, se verian muy chicos)
+// - Laravel middleware limite de peticiones para evitar scripts
+// - Meta logo tagit
+// - Tomar demanda y hacer pancarta para compartir
+// - Formulario captcha
+// - Filtrar por region
+// - Especificar que es top10 demandas
+// - Indexar ayuda de institucion
+// - Restricción por IP
 
 import { Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -153,8 +157,8 @@ export class MainComponent {
   }
 
   createCanvas() {
-    let div = document.getElementById("word-cloud");
-    let canvas = document.getElementById("my_canvas") as HTMLCanvasElement;
+    const div = document.getElementById("word-cloud");
+    const canvas = <HTMLCanvasElement>document.getElementById("my_canvas");
     canvas.height = div.offsetHeight;
     canvas.width  = div.offsetWidth;
     WordCloud(document.getElementById('my_canvas'), {
