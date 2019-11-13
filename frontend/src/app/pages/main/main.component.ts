@@ -1,12 +1,10 @@
 // Requisitos:
-// + Que lista de instituciones muestre los 10 mas populares
-// + Redes sociales en el modal, para compartir resultado
+// - Cuando cambio de ministerio, en el panel de lista, el wordcloud se tiene que ver
 // - Filtrar palabras ofensivas
-// - Que se vean los datos de la demanda, en el link
-// - Que los wordclouds esten renderizados sobre pancartas
 // - Que el wordcloud concentre solo las palabras claves
-// - Diseño responsivo
-// - Recargar datos cuando se ingrese demanda
+// ? Que se pueda cambiar vista de wordcloud, con un solo boton en vez del menú (nose si es necesario)
+// ? Que se vean los datos de la demanda, en el link (no se entiendo)
+// ? Que los wordclouds esten renderizados sobre pancartas (hay poco espacio para mostrar pancartas con los wordcloud, se verian muy chicos)
 
 import { Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -15,7 +13,6 @@ import { TagsService } from 'src/app/services/tags.service';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import * as WordCloud from 'wordcloud';
 import * as $ from 'jquery';
-
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
@@ -27,7 +24,9 @@ export class MainComponent {
   @ViewChild( FormGroupDirective, {static: false}) myForm: any;
   @ViewChild('auto', {static: false}) auto: any;
   API_ENDPOINT = 'http://localhost:8000/api';
+
   initialLoading = true;
+  initialSelect = true;
 
   formNewTag: FormGroup;
   ministeries: any = [];
@@ -58,6 +57,12 @@ export class MainComponent {
   }
 
   getTags() {
+    if(!this.initialSelect) {
+      $([document.documentElement, document.body]).animate({
+        scrollTop: $("#ministery").offset().top - 40
+      }, 400);
+    }
+    this.initialSelect = false;
     this.tags = [];
     $('#my_canvas').animate({ opacity: 0 }, 400);
     if (this.formNewTag.value.ministery.id === 1) {
@@ -88,7 +93,7 @@ export class MainComponent {
           this.sumCount = this.sumCount + item.count;
         }
         for (let item of this.demands) {
-          this.list.push([item.name, Math.round((item.count/this.sumCount) * 90)]);
+          this.list.push([item.name, Math.round((item.count/this.sumCount) * 105)]);
         }
         this.createCanvas();
       });
@@ -132,7 +137,6 @@ export class MainComponent {
         for (let item of this.demands) {
             this.list.push([item.name, Math.round((item.count/this.sumCount) * this.factorMultiple)]);
         }
-        console.log(this.list.length);
         this.createCanvas();
       })
     }
@@ -149,6 +153,10 @@ export class MainComponent {
   }
 
   createCanvas() {
+    let div = document.getElementById("word-cloud");
+    let canvas = document.getElementById("my_canvas") as HTMLCanvasElement;
+    canvas.height = div.offsetHeight;
+    canvas.width  = div.offsetWidth;
     WordCloud(document.getElementById('my_canvas'), {
         list: this.list,
         gridSize: Math.round(8 * $('#my_canvas').width() / 700),
@@ -156,12 +164,14 @@ export class MainComponent {
           return Math.pow(size, 1) * $('#my_canvas').width() / 300;
         },
         rotateRatio: 0,
-        fontFamily: 'Segoe Print'
+        fontFamily: 'Segoe Print',
+        minSize: 8
     });
     $('#my_canvas').animate({ opacity: 1 }, 400);
   }
 
-  fireModal(){
+  fireModal() {
+    this.getTags();
     this.formNewTag.controls['tag'].reset();
     this.successSwal.fire()
     .then((result) => {
@@ -169,6 +179,7 @@ export class MainComponent {
         $([document.documentElement, document.body]).animate({
           scrollTop: $("#formNewTag").offset().top
         }, 400);
+        $('#ministery').focus();
       } else {
         this.formNewTag.controls['email'].reset();
         $([document.documentElement, document.body]).animate({
@@ -178,11 +189,11 @@ export class MainComponent {
     });
   }
 
-  onFocused(e): void {
+  onFocused(): void {
     this.auto.close();
   }
 
-  onCleared(e): void {
+  onCleared(): void {
     this.auto.close();
   }
 }

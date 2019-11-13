@@ -17,7 +17,7 @@
           </div>
         </div>
       </div>
-      <h1 id="infoMinistryTitle" class="text-center pt-3">{{ formNewTag.value.ministery.name }}</h1>
+      <h1 id="infoMinistryTitle" class="text-center pt-3 d-none d-lg-block">{{ formNewTag.value.ministery.name }}</h1>
       <div class="row info-ministry">
         <div class="col-lg-4 col-md-12">
           <div class="form-group pt-4" *ngIf="formNewTag.controls.ministery.status === 'VALID'">
@@ -29,7 +29,7 @@
         </div>
         <div class="col-lg-8 col-md-12">
           <div *ngIf="formNewTag.controls.ministery.status === 'VALID'" class="container pt-4">
-            <ul class="nav nav-pills" id="myTab" role="tablist">
+            <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
               <li class="nav-item">
                 <a class="nav-link active" id="wordcloud-tab" data-toggle="tab" href="#wordcloud" role="tab" aria-controls="wordcloud" aria-selected="true">Wordcloud</a>
               </li>
@@ -41,8 +41,8 @@
               <div class="tab-pane show active" id="wordcloud" role="tabpanel" aria-labelledby="wordcloud-tab">
                 <div class="row">
                   <div class="col-12">
-                    <div *ngIf="!loading" class="word-cloud">
-                      <canvas id="my_canvas" class="canvas d-block mx-auto" width="700" height="350"></canvas>
+                    <div *ngIf="!loading" id="word-cloud">
+                      <canvas id="my_canvas" class="canvas d-block mx-auto"></canvas>
                     </div>
                   </div>
                 </div>
@@ -50,13 +50,13 @@
               <div class="tab-pane" id="list" role="tabpanel" aria-labelledby="list-tab">
                 <table class="table table-hover mt-2 table-sm">
                   <tbody>
-                    <tr>
+                    <tr class="table-info-ministery">
                       <th>Demanda</th>
-                      <th>Votos</th>
+                      <th class="text-center">Votos</th>
                     </tr>
                     <tr *ngFor="let demand of demands">
                       <td>{{ demand.name }}</td>
-                      <td>{{ demand.count }}</td>
+                      <td class="text-center">{{ demand.count }}</td>
                     </tr>
                     <tr>
                     </tbody>
@@ -91,7 +91,7 @@
             <label for="tag">Ingresa tu email:</label>
             <input class="form-control" type="text" id="email" formControlName="email" placeholder="Escribe tu email" required>
           </div>
-            <button [disabled]="formNewTag.invalid" type="submit" class="btn btn-primary d-block mx-auto mb-5">Ingresar</button>
+            <button *ngIf="formNewTag.controls.ministery.status === 'VALID'" [disabled]="formNewTag.invalid" type="submit" class="btn btn-primary d-block mx-auto mb-5">Ingresar</button>
             <swal
               #successSwal
               title="¡Gracias por tu voto!"
@@ -103,10 +103,9 @@
                 </div>
                 <div class='col-2 d-block my-auto pl-0'>
                     <div class='rrss'>
-                      <a target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2Fplugins%2F&amp;src=sdkpreparse' class='fb-xfbml-parse-ignore'><img src='assets/facebook.png'></a>
-                      <a target='_blank' href='https://twitter.com/share' data-lang='es'><img src='assets/twitter.png'></a>
-                      <a href='#'><img src='assets/instagram.png'></a>
-                      <a href='#'><img src='assets/whatsapp.png'></a>
+                      <a target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=https://www.tagit.cl&quote=Acabo de hacer mi voto de {{ formNewTag.value.tag }} en Tagit. ¡Chile necesita un cambio!' class='fb-xfbml-parse-ignore'><img src='assets/facebook.png'></a>
+                      <a target='_blank' href='https://twitter.com/share?text=Acabo de hacer mi voto de {{ formNewTag.value.tag }} en Tagit. ¡Chile necesita un cambio!&url=https://www.tagit.cl' data-lang='es'><img src='assets/twitter.png'></a>
+                      <a href='whatsapp://send?text=Acabo de hacer mi voto de {{ formNewTag.value.tag }} en Tagit. ¡Chile necesita un cambio! https://www.tagit.cl'><img src='assets/whatsapp.png'></a>
                     </div>
                 </div>
               </div>

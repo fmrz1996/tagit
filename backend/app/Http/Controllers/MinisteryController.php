@@ -14,6 +14,6 @@ class MinisteryController extends Controller
      */
     public function index()
     {
-        return Ministery::withCount('tags')->orderBy('tags_count', 'desc')->take(10)->get();
+        return Ministery::withCount('tags')->orderBy('tags_count', 'desc')->get();
     }
 }
