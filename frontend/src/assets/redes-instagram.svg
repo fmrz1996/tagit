@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35.157" height="16.002" viewBox="0 0 35.157 16.002">
+  <defs>
+    <radialGradient id="radial-gradient" cx="0.768" cy="1.442" r="1.79" gradientTransform="translate(-0.916) scale(2.832 1)" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#f9ed32"/>
+      <stop offset="0.064" stop-color="#f7d939"/>
+      <stop offset="0.195" stop-color="#f4a54c"/>
+      <stop offset="0.38" stop-color="#f0536b"/>
+      <stop offset="0.466" stop-color="#ee2a7b"/>
+      <stop offset="0.648" stop-color="#ec2a7c"/>
+      <stop offset="0.722" stop-color="#e42a80"/>
+      <stop offset="0.776" stop-color="#d82a86"/>
+      <stop offset="0.821" stop-color="#c72a90"/>
+      <stop offset="0.86" stop-color="#b02a9d"/>
+      <stop offset="0.895" stop-color="#942aac"/>
+      <stop offset="0.926" stop-color="#722abf"/>
+      <stop offset="0.956" stop-color="#4b2ad4"/>
+      <stop offset="0.982" stop-color="#212aec"/>
+      <stop offset="1" stop-color="#002aff"/>
+    </radialGradient>
+    <radialGradient id="radial-gradient-2" cx="0.26" cy="1.208" r="1.714" gradientTransform="translate(0.247) scale(0.507 1)" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#f9ed32"/>
+      <stop offset="0.061" stop-color="#f7d939"/>
+      <stop offset="0.187" stop-color="#f4a54c"/>
+      <stop offset="0.365" stop-color="#f0536b"/>
+      <stop offset="0.449" stop-color="#ee2a7b"/>
+      <stop offset="0.513" stop-color="#e92a7d"/>
+      <stop offset="0.584" stop-color="#dc2a84"/>
+      <stop offset="0.658" stop-color="#c52a91"/>
+      <stop offset="0.735" stop-color="#a62aa2"/>
+      <stop offset="0.813" stop-color="#7e2ab8"/>
+      <stop offset="0.893" stop-color="#4d2ad3"/>
+      <stop offset="0.973" stop-color="#142af3"/>
+      <stop offset="1" stop-color="#002aff"/>
+    </radialGradient>
+  </defs>
+  <g id="Grupo_40" data-name="Grupo 40" transform="translate(-965.127 -27.247)">
+    <g id="Grupo_38" data-name="Grupo 38">
+      <path id="Trazado_2" data-name="Trazado 2" d="M283.24,122.468a10.04,10.04,0,0,0,0-15.969h.206l.3,0h-1.7l-.3,0h-.206a10.04,10.04,0,0,1,0,15.969h0l1.282.03H282.1l1.135-.029Z" transform="translate(713.091 -79.249)" fill="url(#radial-gradient)"/>
+      <path id="Trazado_4" data-name="Trazado 4" d="M145.8,108.146a7.986,7.986,0,0,0-4.841-1.635H125.407a7.986,7.986,0,0,0-4.841,1.635h0a7.985,7.985,0,0,0,0,12.7h0a7.984,7.984,0,0,0,4.841,1.635h15.556a7.985,7.985,0,0,0,4.841-1.635h0a7.985,7.985,0,0,0,0-12.7Z" transform="translate(847.705 -79.262)" fill="url(#radial-gradient-2)"/>
+    </g>
+    <g id="Grupo_12" data-name="Grupo 12" transform="translate(975.231 30.208)">
+      <g id="Grupo_9" data-name="Grupo 9">
+        <path id="Trazado_5" data-name="Trazado 5" d="M181.35,133.632h-4.28a3.449,3.449,0,0,1-3.445-3.445v-3.772a3.449,3.449,0,0,1,3.445-3.445h4.28a3.449,3.449,0,0,1,3.445,3.445v3.772A3.449,3.449,0,0,1,181.35,133.632Zm-4.28-9.9a2.682,2.682,0,0,0-2.679,2.68v3.772a2.682,2.682,0,0,0,2.679,2.679h4.28a2.683,2.683,0,0,0,2.679-2.679v-3.772a2.683,2.683,0,0,0-2.679-2.68Z" transform="translate(-173.625 -122.97)" fill="#fff"/>
+      </g>
+      <g id="Grupo_10" data-name="Grupo 10" transform="translate(2.519 2.264)">
+        <path id="Trazado_6" data-name="Trazado 6" d="M190.7,141.7a3.067,3.067,0,1,1,3.067-3.067A3.07,3.07,0,0,1,190.7,141.7Zm0-5.368a2.3,2.3,0,1,0,2.3,2.3A2.3,2.3,0,0,0,190.7,136.33Z" transform="translate(-187.634 -135.564)" fill="#fff"/>
+      </g>
+      <g id="Grupo_11" data-name="Grupo 11" transform="translate(7.969 1.722)">
+        <path id="Trazado_7" data-name="Trazado 7" d="M219.221,133.186a.636.636,0,1,1-.636-.636A.636.636,0,0,1,219.221,133.186Z" transform="translate(-217.948 -132.55)" fill="#fff"/>
+      </g>
+    </g>
+  </g>
+</svg>

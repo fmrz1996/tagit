@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35.157" height="16.002" viewBox="0 0 35.157 16.002">
+  <defs>
+    <linearGradient id="linear-gradient" y1="0.5" x2="1" y2="0.5" gradientUnits="objectBoundingBox">
+      <stop offset="0.036" stop-color="#395398"/>
+      <stop offset="0.424" stop-color="#3a549a"/>
+      <stop offset="0.678" stop-color="#3e5ba3"/>
+      <stop offset="0.892" stop-color="#4565b2"/>
+      <stop offset="0.99" stop-color="#4a6dbc"/>
+    </linearGradient>
+  </defs>
+  <g id="Grupo_39" data-name="Grupo 39" transform="translate(-965.127 -57.091)">
+    <path id="Trazado_8" data-name="Trazado 8" d="M283.24,288.468a10.04,10.04,0,0,0,0-15.969h.206l.3,0h-1.7l-.3,0h-.206a10.04,10.04,0,0,1,0,15.969h0l1.282.03H282.1l1.135-.029Z" transform="translate(713.091 -215.405)" fill="url(#linear-gradient)"/>
+    <path id="Trazado_10" data-name="Trazado 10" d="M145.8,274.146a7.986,7.986,0,0,0-4.841-1.635H125.407a7.986,7.986,0,0,0-4.841,1.635h0a7.985,7.985,0,0,0,0,12.7h0a7.984,7.984,0,0,0,4.841,1.635h15.556a7.985,7.985,0,0,0,4.841-1.635h0a7.985,7.985,0,0,0,0-12.7Z" transform="translate(847.705 -215.418)" fill="url(#linear-gradient)"/>
+    <path id="Trazado_11" data-name="Trazado 11" d="M192.281,298.191v-5.113H194l.257-1.993h-1.973v-1.272c0-.577.16-.97.988-.97h1.055V287.06a14.12,14.12,0,0,0-1.538-.078,2.4,2.4,0,0,0-2.563,2.634v1.47H188.5v1.993h1.72v5.113Z" transform="translate(789.403 -227.287)" fill="#fff"/>
+  </g>
+</svg>

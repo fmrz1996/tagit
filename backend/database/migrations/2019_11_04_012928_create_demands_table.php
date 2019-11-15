@@ -18,6 +18,8 @@ class CreateDemandsTable extends Migration
             $table->string('email');
             $table->unsignedBigInteger('tag_id');
             $table->foreign('tag_id')->references('id')->on('tags');
+            $table->unsignedBigInteger('region_id');
+            $table->foreign('region_id')->references('id')->on('regions');
         });
     }
 

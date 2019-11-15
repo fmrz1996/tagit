@@ -5,6 +5,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
+import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './shared/header/header.component';
@@ -30,7 +31,9 @@ import { MaxWordCountValidator } from './max-word-count-validator';
     ReactiveFormsModule,
     FormsModule,
     AutocompleteLibModule,
-    SweetAlert2Module.forRoot()
+    SweetAlert2Module.forRoot(),
+    RecaptchaModule,
+    RecaptchaFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

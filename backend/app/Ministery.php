@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ministery extends Model
 {
   protected $fillable = [
-      'name', 'leader', 'image',
+      'name', 'leader', 'image', 'url',
   ];
 
   public function tags()

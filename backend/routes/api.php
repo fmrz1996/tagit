@@ -11,3 +11,5 @@ Route::post('tag', 'TagController@store');
 Route::get('demand', 'DemandController@index');
 Route::get('demand/ministery/{id}', 'DemandController@showByMinistery');
 Route::post('demand', 'DemandController@store');
+
+Route::get('region', 'RegionController@index');

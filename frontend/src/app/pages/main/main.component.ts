@@ -1,14 +1,11 @@
 // Requisitos:
 // - Cuando cambio de ministerio, en el panel de lista, el wordcloud se tiene que ver
 // - Filtrar palabras ofensivas
-// - Laravel middleware limite de peticiones para evitar scripts
-// - Meta logo tagit
 // - Tomar demanda y hacer pancarta para compartir
-// - Formulario captcha
-// - Filtrar por region
-// - Especificar que es top10 demandas
-// - Indexar ayuda de institucion
 // - Restricción por IP
+// - Que el correo pueda tener un solo voto por ministerio
+// - Datos basicos de formulario salgan en un modal
+// - Hacer prueba con varios votos
 
 import { Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -24,16 +21,19 @@ import * as $ from 'jquery';
 })
 export class MainComponent {
 
+  @ViewChild('formSwal', {static: false}) private formSwal: SwalComponent;
   @ViewChild('successSwal', {static: false}) private successSwal: SwalComponent;
   @ViewChild( FormGroupDirective, {static: false}) myForm: any;
   @ViewChild('auto', {static: false}) auto: any;
+  // API_ENDPOINT = 'https://api.tagit.cl/api';
   API_ENDPOINT = 'http://localhost:8000/api';
-
   initialLoading = true;
   initialSelect = true;
 
   formNewTag: FormGroup;
   ministeries: any = [];
+  ministeryUrl: string;
+  regions: any = [];
   tags: any = [];
   list: any = [];
   demands: any = [];
@@ -45,6 +45,9 @@ export class MainComponent {
   constructor( public formBuilder: FormBuilder,
                private httpClient: HttpClient,
                private tagsService: TagsService ) {
+                 this.httpClient.get(this.API_ENDPOINT + '/region').subscribe((data:any) => {
+                   this.regions = data;
+                 });
                  this.httpClient.get(this.API_ENDPOINT + '/ministery').subscribe((data:any) => {
                    this.ministeries = data;
                    this.formNewTag.controls.ministery.setValue(this.ministeries[0]);
@@ -52,11 +55,13 @@ export class MainComponent {
                  });
                  this.formNewTag = formBuilder.group({
                    'ministery': new FormControl('', Validators.required),
+                   'region': new FormControl('', Validators.required),
                    'tag': new FormControl('', [Validators.required,
                                                Validators.maxLength(40)]),
                    'email': new FormControl('', [Validators.required,
                                                  Validators.pattern('[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}')
-                                                ])
+                                               ]),
+                    'recaptchaReactive': new FormControl('', Validators.required)
                  });
   }
 
@@ -97,7 +102,7 @@ export class MainComponent {
           this.sumCount = this.sumCount + item.count;
         }
         for (let item of this.demands) {
-          this.list.push([item.name, Math.round((item.count/this.sumCount) * 105)]);
+          this.list.push([item.name, Math.round((item.count/this.sumCount) * 15)]);
         }
         this.createCanvas();
       });
@@ -150,8 +155,8 @@ export class MainComponent {
   createDemand() {
     this.tagsService.saveTag({'name': this.formNewTag.value.tag, 'ministery_id': this.formNewTag.value.ministery.id}).subscribe((data:any) => {
       this.tagDemand = data.id;
-      this.tagsService.saveDemand({'email': this.formNewTag.value.email, 'tag_id': this.tagDemand}).subscribe((_data:any) => {
-        this.fireModal();
+      this.tagsService.saveDemand({'email': this.formNewTag.value.email, 'tag_id': this.tagDemand, 'region_id': this.formNewTag.value.region}).subscribe((_data:any) => {
+        this.fireSuccessModal();
       });
     });
   }
@@ -174,7 +179,11 @@ export class MainComponent {
     $('#my_canvas').animate({ opacity: 1 }, 400);
   }
 
-  fireModal() {
+  fireFormModal() {
+    this.formSwal.fire();
+  }
+
+  fireSuccessModal() {
     this.getTags();
     this.formNewTag.controls['tag'].reset();
     this.successSwal.fire()

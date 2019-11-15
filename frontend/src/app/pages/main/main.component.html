@@ -1,62 +1,68 @@
-<section class="pt-4 main">
+<section class="mt-4 pt-2 main text-white">
   <div *ngIf="initialLoading" class="text-center loading">
-    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+    <div class="spinner-border text-white" style="width: 3rem; height: 3rem;" role="status">
       <span class="sr-only">Loading...</span>
     </div>
   </div>
   <div *ngIf="!initialLoading" class="container animated fadeIn">
     <form [formGroup]="formNewTag" class="pt-2" autocomplete="off" (ngSubmit)="createDemand()" id="formNewTag">
       <div class="row">
-        <div class="col-12">
+        <div class="col-10">
           <div class="form-group">
-            <label for="ministery">Para comenzar, selecciona una institución:</label>
+            <label class="label-ministery" for="ministery">Para comenzar, selecciona una institución:</label>
             <select class="form-control select-ministery" formControlName="ministery" id="ministery" (change)="getTags()">
               <option value="" hidden selected>Seleciona un ministerio</option>
               <option *ngFor="let ministery of ministeries" [ngValue]="ministery">{{ ministery.name }}</option>
             </select>
           </div>
         </div>
+        <div class="col-2 mt-auto">
+          <div class="form-group">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Nueva propuesta</button>
+          </div>
+        </div>
       </div>
-      <h1 class="text-center pt-3">Top 10 demandas <span id="infoMinistryTitle" class="text-muted">{{ formNewTag.value.ministery.name }}</span></h1>
       <div class="row info-ministry">
         <div class="col-lg-4 col-md-12">
           <div class="form-group pt-4" *ngIf="formNewTag.controls.ministery.status === 'VALID'">
             <div class="info-ministery text-center">
-              <img class="img-leader mb-2" src="assets/ministries/{{formNewTag.value.ministery.image}}">
-              <span>{{ formNewTag.value.ministery.leader }}</span>
+              <h3 id="infoMinistryTitle" class="font-weight-bold">{{ formNewTag.value.ministery.name }}</h3>
+              <img class="img-leader mt-3 mb-2 rounded-xl" src="assets/ministries/{{formNewTag.value.ministery.image}}">
+              <!-- <span>{{ formNewTag.value.ministery.leader }}</span> -->
             </div>
           </div>
         </div>
         <div class="col-lg-8 col-md-12">
           <div *ngIf="formNewTag.controls.ministery.status === 'VALID'" class="container pt-4">
-            <ul class="nav nav-tabs justify-content-center" id="myTab" role="tablist">
+            <h3 class="text-center font-weight-bold">Propuestas sociales de la gente</h3>
+            <ul class="nav nav-tabs justify-content-center mt-3" id="myTab" role="tablist">
               <li class="nav-item">
                 <a class="nav-link active" id="wordcloud-tab" data-toggle="tab" href="#wordcloud" role="tab" aria-controls="wordcloud" aria-selected="true">Wordcloud</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" id="list-tab" data-toggle="tab" href="#list" role="tab" aria-controls="list" aria-selected="false">Lista</a>
+                <a class="nav-link" id="list-tab" data-toggle="tab" href="#list" role="tab" aria-controls="list" aria-selected="false">Lista Top 10</a>
               </li>
             </ul>
             <div class="tab-content" id="myTabContent">
               <div class="tab-pane show active" id="wordcloud" role="tabpanel" aria-labelledby="wordcloud-tab">
                 <div class="row">
                   <div class="col-12">
-                    <div *ngIf="!loading" id="word-cloud">
+                    <div id="word-cloud">
                       <canvas id="my_canvas" class="canvas d-block mx-auto"></canvas>
                     </div>
                   </div>
                 </div>
               </div>
               <div class="tab-pane" id="list" role="tabpanel" aria-labelledby="list-tab">
-                <table class="table table-hover mt-2 table-sm">
+                <table class="table table-hover table-sm">
                   <tbody>
                     <tr class="table-info-ministery">
-                      <th>Demanda</th>
-                      <th class="text-center">Votos</th>
+                      <th>Propuestas sociales</th>
+                      <th class="text-right">Menciones</th>
                     </tr>
                     <tr *ngFor="let demand of demands">
-                      <td>{{ demand.name }}</td>
-                      <td class="text-center">{{ demand.count }}</td>
+                      <td class="font-italic">{{ demand.name }}</td>
+                      <td class="font-italic text-right">{{ demand.count }}</td>
                     </tr>
                     <tr>
                     </tbody>
@@ -68,57 +74,71 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <div *ngIf="formNewTag.controls.ministery.status === 'VALID'" class="form-group">
-            <label for="tag">Ingresa tu demanda:</label>
-            <div class="ng-autocomplete">
-              <ng-autocomplete
-                #auto
-                (inputFocused)="onFocused($event)"
-                (inputCleared)="onCleared($event)"
-                [data]="tags"
-                [placeHolder]="'Escribe tu demanda (máximo 4 palabras, 40 caracteres)'"
-                [itemTemplate]="itemTemplate"
-                formControlName="tag"
-                [minQueryLength]="2"
-                max-word-count>
-              </ng-autocomplete>
-              <ng-template #itemTemplate let-item>
-                <a [innerHTML]="item"></a>
-              </ng-template>
-            </div>
+          <p class="mt-2">{{ formNewTag.value.ministery.description }}</p>
+          <!-- <p>Mas información: <a target="_blank" [href]="formNewTag.value.ministery.url">{{ formNewTag.value.ministery.url }}</a></p> -->
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="form-group">
+            <label for="region">Selecciona tu región:</label>
+            <select class="form-control" formControlName="region" id="region">
+              <option value="" hidden selected>Seleciona una región</option>
+              <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
+            </select>
           </div>
-          <div class="form-group" *ngIf="formNewTag.controls.ministery.status === 'VALID'">
+          <div class="form-group">
             <label for="tag">Ingresa tu email:</label>
             <input class="form-control" type="text" id="email" formControlName="email" placeholder="Escribe tu email" required>
           </div>
-            <button *ngIf="formNewTag.controls.ministery.status === 'VALID'" [disabled]="formNewTag.invalid" type="submit" class="btn btn-primary d-block mx-auto mb-5">Ingresar</button>
-            <swal
-              #successSwal
-              title="¡Gracias por tu voto!"
-              showCancelButton="true"
-              html="
-              <div class='row mt-3'>
-                <div class='col-10 pr-0'>
-                  <img class='img-modal' src='assets/ministries/{{formNewTag.value.ministery.image}}'>
-                </div>
-                <div class='col-2 d-block my-auto pl-0'>
-                    <div class='rrss'>
-                      <a target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=https://www.tagit.cl&quote=Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta en Tagit!' class='fb-xfbml-parse-ignore'><img src='assets/facebook.png'></a>
-                      <a target='_blank' href='https://twitter.com/share?text=Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta en Tagit!&url=https://www.tagit.cl' data-lang='es'><img src='assets/twitter.png'></a>
-                      <a href='Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta en Tagit! https://www.tagit.cl'><img src='assets/whatsapp.png'></a>
-                    </div>
-                </div>
-              </div>
-              <div class='row mt-4'>
-                <div class='col-12'>
-                  <p>Estimado <b>{{ formNewTag.value.ministery.name }}:</b> Chile necesita un cambio urgente, y <b>{{ formNewTag.value.tag }}</b> es una priodidad.<p>
-                </div>
-              </div>"
-              confirmButtonText="¡Seguir votando!"
-              cancelButtonText="Volver atrás">
-            </swal>
+          <div class="form-group">
+            <label for="tag">Ingresa tu demanda:</label>
+            <div class="ng-autocomplete">
+              <ng-autocomplete
+              #auto
+              (inputFocused)="onFocused()"
+              (inputCleared)="onCleared()"
+              [data]="tags"
+              [placeHolder]="'Escribe tu demanda (máximo 4 palabras, 40 caracteres)'"
+              [itemTemplate]="itemTemplate"
+              formControlName="tag"
+              [minQueryLength]="2"
+              max-word-count>
+            </ng-autocomplete>
+            <ng-template #itemTemplate let-item>
+              <a [innerHTML]="item"></a>
+            </ng-template>
           </div>
         </div>
-      </form>
-    </div>
+        <re-captcha *ngIf="formNewTag.controls.ministery.status === 'VALID'" formControlName="recaptchaReactive" siteKey="6Ld1tsIUAAAAAFKbSch92W9sCRPNDewiCIqhviYs"></re-captcha>
+        <button *ngIf="formNewTag.controls.ministery.status === 'VALID'" [disabled]="formNewTag.invalid" type="submit" class="btn btn-primary d-block mx-auto mt-2 mb-5">Ingresar</button>
+        </div>
+      </div>
+      <swal
+        #successSwal
+        title="¡Gracias por tu voto!"
+        showCancelButton="true"
+        html="
+        <div class='row mt-3'>
+          <div class='col-10 pr-0'>
+            <img class='img-modal' src='assets/ministries/{{formNewTag.value.ministery.image}}'>
+          </div>
+          <div class='col-2 d-block my-auto pl-0'>
+              <div class='rrss'>
+                <a target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=https://www.tagit.cl&quote=Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta en Tagit!' class='fb-xfbml-parse-ignore'><img src='assets/facebook.png'></a>
+                <a target='_blank' href='https://twitter.com/share?text=Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta en Tagit!&url=https://www.tagit.cl' data-lang='es'><img src='assets/twitter.png'></a>
+                <a href='Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta en Tagit! https://www.tagit.cl'><img src='assets/whatsapp.png'></a>
+              </div>
+          </div>
+        </div>
+        <div class='row mt-4'>
+          <div class='col-12'>
+            <p>Estimado <b>{{ formNewTag.value.ministery.name }}:</b> Chile necesita un cambio urgente, y <b>{{ formNewTag.value.tag }}</b> es una priodidad.<p>
+          </div>
+        </div>"
+        confirmButtonText="¡Seguir votando!"
+        cancelButtonText="Volver atrás">
+      </swal>
+    </form>
+  </div>
 </section>
