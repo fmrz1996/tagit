@@ -1,12 +1,14 @@
 // Requisitos:
-// - Terminar de estilar como el mockup
+// * Datos basicos de formulario salgan en un modal
+// * Terminar de estilar como el mockup
+// - Que el logo sea clickeable solo en la img
 // - Cuando cambio de ministerio, en el panel de lista, el wordcloud se tiene que ver
 // - Filtrar palabras ofensivas
 // - Tomar demanda y hacer pancarta para compartir
 // - Restricción por IP
 // - Que el correo pueda tener un solo voto por ministerio
-// - Datos basicos de formulario salgan en un modal
 // - Hacer prueba con varios votos
+// - Evitar que funcione el teclado con los select
 import { Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
@@ -21,7 +23,6 @@ import * as $ from 'jquery';
 })
 export class MainComponent {
 
-  @ViewChild('formSwal', {static: false}) private formSwal: SwalComponent;
   @ViewChild('successSwal', {static: false}) private successSwal: SwalComponent;
   @ViewChild( FormGroupDirective, {static: false}) myForm: any;
   @ViewChild('auto', {static: false}) auto: any;
@@ -30,11 +31,13 @@ export class MainComponent {
   initialLoading = true;
   initialSelect = true;
 
+  formMinistery: FormGroup;
   formNewTag: FormGroup;
   ministeries: any = [];
   ministeryUrl: string;
   regions: any = [];
   tags: any = [];
+  tagsAutocomplete: any = [];
   list: any = [];
   demands: any = [];
   tagDemand: number;
@@ -50,13 +53,17 @@ export class MainComponent {
                  });
                  this.httpClient.get(this.API_ENDPOINT + '/ministery').subscribe((data:any) => {
                    this.ministeries = data;
-                   this.formNewTag.controls.ministery.setValue(this.ministeries[0]);
+                   this.formMinistery.controls.ministery.setValue(this.ministeries[0]);
                    this.getTags();
+                 });
+                 this.formMinistery = formBuilder.group({
+                   'ministery': new FormControl('', Validators.required)
                  });
                  this.formNewTag = formBuilder.group({
                    'ministery': new FormControl('', Validators.required),
                    'region': new FormControl('', Validators.required),
                    'tag': new FormControl('', [Validators.required,
+                                               Validators.minLength(10),
                                                Validators.maxLength(40)]),
                    'email': new FormControl('', [Validators.required,
                                                  Validators.pattern('[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}')
@@ -74,7 +81,7 @@ export class MainComponent {
     this.initialSelect = false;
     this.tags = [];
     $('#my_canvas').animate({ opacity: 0 }, 400);
-    if (this.formNewTag.value.ministery.id === 1) {
+    if (this.formMinistery.value.ministery.id === 1) {
       this.httpClient.get(this.API_ENDPOINT + '/tag').subscribe((data:any) => {
       for (let tag of data) {
           this.tags.push(tag.name);
@@ -82,7 +89,7 @@ export class MainComponent {
       this.getDemands();
       })
     } else {
-      this.httpClient.get(this.API_ENDPOINT + '/tag/ministery/' + this.formNewTag.value.ministery.id).subscribe((data:any) => {
+      this.httpClient.get(this.API_ENDPOINT + '/tag/ministery/' + this.formMinistery.value.ministery.id).subscribe((data:any) => {
         for (let tag of data) {
           this.tags.push(tag.name);
         }
@@ -95,7 +102,7 @@ export class MainComponent {
     this.list = [];
     this.sumCount = 0;
     this.sumRows = 0;
-    if (this.formNewTag.value.ministery.id === 1) {
+    if (this.formMinistery.value.ministery.id === 1) {
       this.httpClient.get(this.API_ENDPOINT + '/demand').subscribe((data:any) => {
         this.demands = data;
         for (let item of this.demands) {
@@ -155,7 +162,12 @@ export class MainComponent {
   createDemand() {
     this.tagsService.saveTag({'name': this.formNewTag.value.tag, 'ministery_id': this.formNewTag.value.ministery.id}).subscribe((data:any) => {
       this.tagDemand = data.id;
-      this.tagsService.saveDemand({'email': this.formNewTag.value.email, 'tag_id': this.tagDemand, 'region_id': this.formNewTag.value.region}).subscribe((_data:any) => {
+      this.tagsService.saveDemand({'email': this.formNewTag.value.email, 'tag_id': this.tagDemand, 'region_id': this.formNewTag.value.region.id}).subscribe((_data:any) => {
+        $('.modal').removeClass('in');
+        $('.modal').attr("aria-hidden","true");
+        $('.modal').css("display", "none");
+        $('.modal-backdrop').remove();
+        $('body').removeClass('modal-open');
         this.fireSuccessModal();
       });
     });
@@ -179,13 +191,19 @@ export class MainComponent {
     $('#my_canvas').animate({ opacity: 1 }, 400);
   }
 
-  fireFormModal() {
-    this.formSwal.fire();
+  getTagsAutocomplete() {
+    this.tagsAutocomplete = [];
+    this.httpClient.get(this.API_ENDPOINT + '/tag/ministery/' + this.formNewTag.value.ministery.id).subscribe((data:any) => {
+      for (let tag of data) {
+        this.tagsAutocomplete.push(tag.name);
+      }
+    })
   }
 
   fireSuccessModal() {
     this.getTags();
     this.formNewTag.controls['tag'].reset();
+    this.formNewTag.controls['ministery'].reset();
     this.successSwal.fire()
     .then((result) => {
       if (result.value) {
@@ -195,6 +213,8 @@ export class MainComponent {
         $('#ministery').focus();
       } else {
         this.formNewTag.controls['email'].reset();
+        this.formNewTag.controls['region'].reset();
+        this.formNewTag.controls['ministery'].reset();
         $([document.documentElement, document.body]).animate({
           scrollTop: $("#infoMinistryTitle").offset().top
         }, 400);

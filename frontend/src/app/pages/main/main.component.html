@@ -5,9 +5,9 @@
     </div>
   </div>
   <div *ngIf="!initialLoading" class="container animated fadeIn">
-    <form [formGroup]="formNewTag" class="pt-2" autocomplete="off" (ngSubmit)="createDemand()" id="formNewTag">
+    <form [formGroup]="formMinistery" class="pt-2" autocomplete="off" id="formMinistery">
       <div class="row">
-        <div class="col-10">
+        <div class="col-md-10 col-sm-12">
           <div class="form-group">
             <label class="label-ministery" for="ministery">Para comenzar, selecciona una institución:</label>
             <select class="form-control select-ministery" formControlName="ministery" id="ministery" (change)="getTags()">
@@ -16,24 +16,26 @@
             </select>
           </div>
         </div>
-        <div class="col-2 mt-auto">
+        <div class="col-md-2 col-sm-12 mt-auto">
           <div class="form-group">
-            <button type="button" class="btn btn-primary rounded-xl" data-toggle="modal" data-target="#exampleModal">Nueva propuesta</button>
+            <button type="button" class="btn btn-primary rounded-xl btn-newformmodal" data-toggle="modal" data-target="#exampleModalLong">Nueva propuesta</button>
           </div>
         </div>
       </div>
       <div class="row info-ministry">
         <div class="col-lg-4 col-md-12">
-          <div class="form-group pt-4" *ngIf="formNewTag.controls.ministery.status === 'VALID'">
+          <div class="form-group pt-4" *ngIf="formMinistery.controls.ministery.status === 'VALID'">
             <div class="info-ministery text-center">
-              <h3 id="infoMinistryTitle" class="font-weight-bold">{{ formNewTag.value.ministery.name }}</h3>
-              <img class="img-leader mt-3 mb-2 rounded-xl" src="assets/ministries/{{formNewTag.value.ministery.image}}">
-              <!-- <span>{{ formNewTag.value.ministery.leader }}</span> -->
+              <h3 id="infoMinistryTitle" class="font-weight-bold">{{ formMinistery.value.ministery.name }}</h3>
+              <div class="img-leader-container mt-3 mb-2">
+                <h6>{{ formMinistery.value.ministery.leader }}</h6>
+                <img class="img-leader rounded-xl" src="assets/ministries/{{formMinistery.value.ministery.image}}">
+              </div>
             </div>
           </div>
         </div>
         <div class="col-lg-8 col-md-12">
-          <div *ngIf="formNewTag.controls.ministery.status === 'VALID'" class="container pt-4">
+          <div *ngIf="formMinistery.controls.ministery.status === 'VALID'" class="container pt-4">
             <h3 class="text-center font-weight-bold">Propuestas sociales de la gente</h3>
             <ul class="nav nav-tabs justify-content-center mt-3" id="myTab" role="tablist">
               <li class="nav-item">
@@ -42,6 +44,7 @@
               <li class="nav-item">
                 <a class="nav-link" id="list-tab" data-toggle="tab" href="#list" role="tab" aria-controls="list" aria-selected="false">Lista Top 10</a>
               </li>
+              <button id="btn-infoModal" type="button" class="btn" data-toggle="modal" data-target="#infoModal"><img src="assets/icono-info.svg"></button>
             </ul>
             <div class="tab-content" id="myTabContent">
               <div class="tab-pane show active" id="wordcloud" role="tabpanel" aria-labelledby="wordcloud-tab">
@@ -74,44 +77,7 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <p class="mt-2">{{ formNewTag.value.ministery.description }}</p>
-          <!-- <p>Mas información: <a target="_blank" [href]="formNewTag.value.ministery.url">{{ formNewTag.value.ministery.url }}</a></p> -->
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-12">
-          <div class="form-group">
-            <label for="region">Selecciona tu región:</label>
-            <select class="form-control" formControlName="region" id="region">
-              <option value="" hidden selected>Seleciona una región</option>
-              <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="tag">Ingresa tu email:</label>
-            <input class="form-control" type="text" id="email" formControlName="email" placeholder="Escribe tu email" required>
-          </div>
-          <div class="form-group">
-            <label for="tag">Ingresa tu demanda:</label>
-            <div class="ng-autocomplete">
-              <ng-autocomplete
-              #auto
-              (inputFocused)="onFocused()"
-              (inputCleared)="onCleared()"
-              [data]="tags"
-              [placeHolder]="'Escribe tu demanda (máximo 4 palabras, 40 caracteres)'"
-              [itemTemplate]="itemTemplate"
-              formControlName="tag"
-              [minQueryLength]="2"
-              max-word-count>
-            </ng-autocomplete>
-            <ng-template #itemTemplate let-item>
-              <a [innerHTML]="item"></a>
-            </ng-template>
-          </div>
-        </div>
-        <re-captcha *ngIf="formNewTag.controls.ministery.status === 'VALID'" formControlName="recaptchaReactive" siteKey="6Ld1tsIUAAAAAFKbSch92W9sCRPNDewiCIqhviYs"></re-captcha>
-        <button *ngIf="formNewTag.controls.ministery.status === 'VALID'" [disabled]="formNewTag.invalid" type="submit" class="btn btn-primary d-block mx-auto mt-2 mb-5">Ingresar</button>
+          <p class="mt-4 info-ministery-text">{{ formMinistery.value.ministery.description }}</p>
         </div>
       </div>
       <swal
@@ -142,4 +108,87 @@
     </form>
   </div>
   <app-footer *ngIf="!initialLoading"></app-footer>
+  <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-keyboard="false">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title text-primary text-center font-weight-bold mx-auto" id="exampleModalLongTitle">Añade tu propuesta social</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <img src="assets/icono-close.svg">
+          </button>
+        </div>
+        <form [formGroup]="formNewTag" class="pt-2" autocomplete="off" (ngSubmit)="createDemand()" id="formNewTag">
+          <div class="modal-body text-dark">
+            <div class="row">
+              <div class="col-12">
+                <div class="form-group">
+                  <label for="tag">Ingresa tu email:</label>
+                  <input class="form-control" type="text" id="email" formControlName="email" placeholder="Escribe tu email" required>
+                </div>
+                <div class="form-group">
+                  <label for="region">Selecciona tu región:</label>
+                  <select class="form-control" formControlName="region" id="region">
+                    <option value="" hidden selected>Seleciona una región</option>
+                    <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="ministery">Selecciona una institución:</label>
+                  <select class="form-control" formControlName="ministery" id="ministery" (change)="getTagsAutocomplete()">
+                    <option value="" hidden selected>Seleciona una institución</option>
+                    <option *ngFor="let ministery of ministeries" [ngValue]="ministery">{{ ministery.name }}</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="tag">Ingresa tu propuesta <span class="text-muted">(máximo 4 palabras, 10-40 caracteres)</span>:</label>
+                  <div class="ng-autocomplete">
+                    <ng-autocomplete
+                    #auto
+                    (inputFocused)="onFocused()"
+                    (inputCleared)="onCleared()"
+                    [data]="tagsAutocomplete"
+                    [placeHolder]="'Ejemplo: Aumentar salario minimo'"
+                    [itemTemplate]="itemTemplate"
+                    formControlName="tag"
+                    [minQueryLength]="2"
+                    max-word-count>
+                  </ng-autocomplete>
+                  <ng-template #itemTemplate let-item>
+                    <a [innerHTML]="item"></a>
+                  </ng-template>
+                </div>
+              </div>
+              <re-captcha *ngIf="formMinistery.controls.ministery.status === 'VALID'" formControlName="recaptchaReactive" siteKey="6Ld1tsIUAAAAAFKbSch92W9sCRPNDewiCIqhviYs"></re-captcha>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button [disabled]="formNewTag.invalid" type="submit" class="btn btn-primary d-block mx-auto rounded-xl">Ingresar</button>
+        </div>
+      </form>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content text-dark">
+        <div class="modal-header">
+          <h4 class="modal-title text-primary text-center font-weight-bold mx-auto" id="infoModalLabel">¡Somos Tagit!</h4>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <img src="assets/icono-close.svg">
+          </button>
+        </div>
+        <div class="modal-body p-4">
+          <p>Nuestro propósito es aportar desde el mundo digital, dando una plataforma a la gente, para que pueda expresar cuáles son las propuestas sociales que desea transmitir a <b>cada institución gubernamental.</b></p>
+          <p>Es nuestra intención realizar un estudio <b>canalizado y constante</b> sobre las propuestas zonales y a nivel nacional con el fin de generar un documento de consulta, que coopere con otros y sirva de modo evolutivo.</p>
+          <p>En Tagit, puedes ver de forma muy simple las principales necesidades ya sea en modo nube de ideas (mientras más grande la palabra, más coincidencias posee) o como una lista, con el top 10 de las propuestas más señaladas por las personas.</p>
+          <p>Cada ciudadano puede añadir una propuesta social por institución gubernamental, es nuestro compromiso guardar la privacidad de los correos electrónicos entregados por las personas que ingresan en la plataforma.</p>
+          <p class="font-weight-bold">¡Participa y alza tu voz digital!</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary d-block mx-auto rounded-xl" data-dismiss="modal">Volver</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

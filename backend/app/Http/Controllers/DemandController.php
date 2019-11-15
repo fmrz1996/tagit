@@ -32,7 +32,7 @@ class DemandController extends Controller
       return Demand::create([
         'email' => $request['email'],
         'tag_id' => $request['tag_id'],
-        'region_id' => $request['tag_id'],
+        'region_id' => $request['region_id'],
       ]);
     }
 
