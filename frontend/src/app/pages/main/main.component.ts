@@ -7,8 +7,8 @@
 // - Tomar demanda y hacer pancarta para compartir
 // - Restricción por IP
 // - Que el correo pueda tener un solo voto por ministerio
-// - Hacer prueba con varios votos
-// - Evitar que funcione el teclado con los select
+// - Despues de ingresar, se bugea un poco el boton propuesta y el formulario se ve mal
+
 import { Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
@@ -26,8 +26,7 @@ export class MainComponent {
   @ViewChild('successSwal', {static: false}) private successSwal: SwalComponent;
   @ViewChild( FormGroupDirective, {static: false}) myForm: any;
   @ViewChild('auto', {static: false}) auto: any;
-  // API_ENDPOINT = 'https://api.tagit.cl/api';
-  API_ENDPOINT = 'http://localhost:8000/api';
+  API_ENDPOINT = 'https://api.tagit.cl/api';
   initialLoading = true;
   initialSelect = true;
 
@@ -109,12 +108,12 @@ export class MainComponent {
           this.sumCount = this.sumCount + item.count;
         }
         for (let item of this.demands) {
-          this.list.push([item.name, Math.round((item.count/this.sumCount) * 15)]);
+          this.list.push([item.name, Math.round((item.count/this.sumCount) * 130)]);
         }
         this.createCanvas();
       });
     } else {
-      this.httpClient.get(this.API_ENDPOINT + '/demand/ministery/' + this.formNewTag.value.ministery.id).subscribe((data:any) => {
+      this.httpClient.get(this.API_ENDPOINT + '/demand/ministery/' + this.formMinistery.value.ministery.id).subscribe((data:any) => {
         this.demands = data;
         for (let item of this.demands) {
           this.sumCount = this.sumCount + item.count;
@@ -148,7 +147,7 @@ export class MainComponent {
           this.factorMultiple = 90
         }
         if(this.sumRows == 10){
-          this.factorMultiple = 95
+          this.factorMultiple = 130
         }
         for (let item of this.demands) {
             this.list.push([item.name, Math.round((item.count/this.sumCount) * this.factorMultiple)]);
@@ -185,19 +184,26 @@ export class MainComponent {
           return Math.pow(size, 1) * $('#my_canvas').width() / 300;
         },
         rotateRatio: 0,
-        fontFamily: 'Segoe Print',
-        minSize: 8
+        fontFamily: 'Gill Sans MT'
     });
     $('#my_canvas').animate({ opacity: 1 }, 400);
   }
 
   getTagsAutocomplete() {
     this.tagsAutocomplete = [];
-    this.httpClient.get(this.API_ENDPOINT + '/tag/ministery/' + this.formNewTag.value.ministery.id).subscribe((data:any) => {
-      for (let tag of data) {
-        this.tagsAutocomplete.push(tag.name);
-      }
-    })
+    if (this.formMinistery.value.ministery.id === 1) {
+      this.httpClient.get(this.API_ENDPOINT + '/tag').subscribe((data:any) => {
+        for (let tag of data) {
+          this.tagsAutocomplete.push(tag.name);
+        }
+      });
+    } else {
+      this.httpClient.get(this.API_ENDPOINT + '/tag/ministery/' + this.formNewTag.value.ministery.id).subscribe((data:any) => {
+        for (let tag of data) {
+          this.tagsAutocomplete.push(tag.name);
+        }
+      });
+    }
   }
 
   fireSuccessModal() {
