@@ -7,6 +7,19 @@ header .navbar {
   height: 80px;
 }
 
+.header-rrss {
+  position: absolute;
+  display: grid;
+  top: 40px;
+  right: 200px;
+}
+
+footer p,
+.header-logo h1 {
+  font-family: 'Roboto Condensed', sans-serif;
+  font-size: 26px;
+}
+
 .loading {
   margin: 100px;
 }
@@ -22,7 +35,8 @@ header .navbar {
   background-image: url('assets/fondo_2.jpg');
 }
 
-.label-ministery {
+.label-ministery,
+footer p {
   font-size: 18px;
 }
 

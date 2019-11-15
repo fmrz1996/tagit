@@ -1,4 +1,5 @@
 // Requisitos:
+// - Terminar de estilar como el mockup
 // - Cuando cambio de ministerio, en el panel de lista, el wordcloud se tiene que ver
 // - Filtrar palabras ofensivas
 // - Tomar demanda y hacer pancarta para compartir
@@ -6,7 +7,6 @@
 // - Que el correo pueda tener un solo voto por ministerio
 // - Datos basicos de formulario salgan en un modal
 // - Hacer prueba con varios votos
-
 import { Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
