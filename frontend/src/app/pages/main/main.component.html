@@ -18,15 +18,15 @@
         </div>
         <div class="col-md-2 col-sm-12 mt-auto">
           <div class="form-group">
-            <button type="button" class="btn btn-danger rounded-xl btn-newformmodal" data-toggle="modal" data-target="#exampleModalLong">Nueva propuesta</button>
+            <button type="button" class="btn btn-danger rounded-xl btn-newformmodal" (click)="openFormModal()">Nueva propuesta</button>
           </div>
         </div>
       </div>
       <hr>
       <div class="row info-ministry">
         <div class="col-lg-4 col-md-12">
-          <div class="form-group pt-4" *ngIf="formMinistery.controls.ministery.status === 'VALID'">
-            <div class="info-ministery text-center">
+          <div class="form-group" *ngIf="formMinistery.controls.ministery.status === 'VALID'">
+            <div class="info-ministery text-center pt-2">
               <h3 id="infoMinistryTitle" class="font-weight-bold">{{ formMinistery.value.ministery.name }}</h3>
               <div class="img-leader-container mt-3 mb-2">
                 <h6>{{ formMinistery.value.ministery.leader }}</h6>
@@ -36,8 +36,8 @@
           </div>
         </div>
         <div class="col-lg-8 col-md-12">
-          <div *ngIf="formMinistery.controls.ministery.status === 'VALID'" class="container pt-4">
-            <h3 class="text-center font-weight-bold">Propuestas sociales de la gente</h3>
+          <div *ngIf="formMinistery.controls.ministery.status === 'VALID'" class="container pt-2">
+            <h3 id="infoDemandsTitle" class="text-center font-weight-bold">Propuestas sociales de la gente</h3>
             <ul class="nav nav-tabs justify-content-center mt-3" id="myTab" role="tablist">
               <li class="nav-item">
                 <a class="nav-link active" id="wordcloud-tab" data-toggle="tab" href="#wordcloud" role="tab" aria-controls="wordcloud" aria-selected="true">Wordcloud</a>
@@ -88,19 +88,19 @@
         html="
         <div class='row mt-3'>
           <div class='col-10 pr-0'>
-            <img class='img-modal' src='assets/ministries/{{formNewTag.value.ministery.image}}'>
+            <img class='img-modal' src='assets/ministries/{{ formMinistery.value.ministery.image }}'>
           </div>
           <div class='col-2 d-block my-auto pl-0'>
               <div class='rrss'>
-                <a target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=https://www.tagit.cl&quote=Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta en Tagit!' class='fb-xfbml-parse-ignore'><img src='assets/facebook.png'></a>
-                <a target='_blank' href='https://twitter.com/share?text=Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta en Tagit!&url=https://www.tagit.cl' data-lang='es'><img src='assets/twitter.png'></a>
-                <a href='whatsapp://send?text=Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta en Tagit! https://www.tagit.cl'><img src='assets/whatsapp.png'></a>
+                <a target='_blank' href='https://www.facebook.com/sharer/sharer.php?u=https://www.tagit.cl&quote=Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta social en Tagit!' class='fb-xfbml-parse-ignore'><img src='assets/facebook.png'></a>
+                <a target='_blank' href='https://twitter.com/share?text=Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta social en Tagit!&url=https://www.tagit.cl' data-lang='es'><img src='assets/twitter.png'></a>
+                <a href='whatsapp://send?text=Mi propuesta social es: {{ formNewTag.value.tag }}. ¡Haz tu propuesta social en Tagit! https://www.tagit.cl'><img src='assets/whatsapp.png'></a>
               </div>
           </div>
         </div>
         <div class='row mt-4'>
           <div class='col-12'>
-            <p>Estimado <b>{{ formNewTag.value.ministery.name }}:</b> Chile necesita un cambio urgente, y <b>{{ formNewTag.value.tag }}</b> es una priodidad.<p>
+            <p>Estimado <b>{{ formMinistery.value.ministery.name }}:</b> Chile necesita un cambio urgente, y <b>{{ formNewTag.value.tag }}</b> es una priodidad.<p>
           </div>
         </div>"
         confirmButtonText="¡Seguir votando!"
@@ -110,12 +110,12 @@
     <hr>
   </div>
   <app-footer *ngIf="!initialLoading"></app-footer>
-  <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true" data-keyboard="false">
+  <div bsModal #formModal="bs-modal" class="modal fade" id="exampleModalLong" tabindex="-1">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
           <h4 class="modal-title text-primary text-center font-weight-bold mx-auto" id="exampleModalLongTitle">Añade tu propuesta social</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <button type="button" class="close" (click)="closeFormModal()">
             <img src="assets/icono-close.svg">
           </button>
         </div>
@@ -124,10 +124,6 @@
             <div class="row">
               <div class="col-12">
                 <div class="form-group">
-                  <label for="tag">Ingresa tu email:</label>
-                  <input class="form-control" type="text" id="email" formControlName="email" placeholder="Escribe tu email" required>
-                </div>
-                <div class="form-group">
                   <label for="region">Selecciona tu región:</label>
                   <select class="form-control" formControlName="region" id="region">
                     <option value="" hidden selected>Seleciona una región</option>
@@ -135,11 +131,8 @@
                   </select>
                 </div>
                 <div class="form-group">
-                  <label for="ministery">Selecciona una institución:</label>
-                  <select class="form-control" formControlName="ministery" id="ministery" (change)="getTagsAutocomplete()">
-                    <option value="" hidden selected>Seleciona una institución</option>
-                    <option *ngFor="let ministery of ministeries" [ngValue]="ministery">{{ ministery.name }}</option>
-                  </select>
+                  <label for="tag">Ingresa tu email:</label>
+                  <input class="form-control" type="text" id="email" formControlName="email" placeholder="Escribe tu email" required>
                 </div>
                 <div class="form-group">
                   <label for="tag">Ingresa tu propuesta <span class="text-muted">(máximo 4 palabras, 10-40 caracteres)</span>:</label>
@@ -148,7 +141,7 @@
                     #auto
                     (inputFocused)="onFocused()"
                     (inputCleared)="onCleared()"
-                    [data]="tagsAutocomplete"
+                    [data]="tags"
                     [placeHolder]="'Ejemplo: Aumentar salario minimo'"
                     [itemTemplate]="itemTemplate"
                     formControlName="tag"

@@ -31,7 +31,7 @@ class TagController extends Controller
           'name' => $request['name'],
           'ministery_id' => $request['ministery_id'],
         ]);
-        return response()->json('ok');
+        return $tag;
       } else {
         return $tag;
       }

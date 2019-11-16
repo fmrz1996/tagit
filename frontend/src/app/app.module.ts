@@ -6,7 +6,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { AutocompleteLibModule } from 'angular-ng-autocomplete';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { RecaptchaModule, RecaptchaFormsModule } from 'ng-recaptcha';
-import { Globals } from 'src/app/globals';
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './shared/header/header.component';
@@ -15,6 +15,7 @@ import { MainComponent } from './pages/main/main.component';
 import { NavComponent } from './shared/nav/nav.component';
 
 import { MaxWordCountValidator } from './max-word-count-validator';
+import { Globals } from 'src/app/globals';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { MaxWordCountValidator } from './max-word-count-validator';
     AutocompleteLibModule,
     SweetAlert2Module.forRoot(),
     RecaptchaModule,
-    RecaptchaFormsModule
+    RecaptchaFormsModule,
+    ModalModule.forRoot()
   ],
   providers: [Globals],
   bootstrap: [AppComponent]

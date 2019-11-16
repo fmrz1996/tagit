@@ -1,15 +1,11 @@
 // Requisitos:
-// - Corregir errores actuales, como reseteo de form, modal no se oculta de manera optima
-// - Select debe pasar id a formNewTag, para evitar crear otro select
+// - Autocomplete no muestra sugerencias despues de un ingreso
 // - Cuando cambio de ministerio, en el panel de lista, el wordcloud se tiene que ver
-// - Que el logo sea clickeable solo en la img
 // - Filtrar palabras ofensivas
 // - Tomar demanda y hacer pancarta para compartir
 // - Que el correo pueda tener un solo voto por ministerio
-// - Despues de ingresar, se bugea la pag en general, no actualiza info, botones, etc
-// - Compartir wsp no funciona en prod
-// - Ngautocomplete options se ven traspartenes, el boton de ingresar de trasluce
-// - Al llenar los datos el form se envia solo
+// - Background se ve espacio en blanco con el modal
+// - Probar con varios votos
 
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -19,6 +15,8 @@ import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Globals } from 'src/app/globals';
 import * as WordCloud from 'wordcloud';
 import * as $ from 'jquery';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
@@ -29,6 +27,7 @@ export class MainComponent implements OnInit {
   @ViewChild('successSwal', {static: false}) private successSwal: SwalComponent;
   @ViewChild( FormGroupDirective, {static: false}) myForm: any;
   @ViewChild('auto', {static: false}) auto: any;
+  @ViewChild('formModal', {static: false}) public formModal: ModalDirective;
   initialLoading = true;
   initialSelect = true;
 
@@ -38,7 +37,6 @@ export class MainComponent implements OnInit {
   ministeryUrl: string;
   regions: any = [];
   tags: any = [];
-  tagsAutocomplete: any = [];
   list: any = [];
   demands: any = [];
   tagDemand: number;
@@ -65,7 +63,7 @@ export class MainComponent implements OnInit {
       'ministery': new FormControl('', Validators.required)
     });
     this.formNewTag = this.formBuilder.group({
-      'ministery': new FormControl('', Validators.required),
+      'ministery': new FormControl('', null),
       'region': new FormControl('', Validators.required),
       'tag': new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(40)]),
       'email': new FormControl('', [Validators.required, Validators.email]),
@@ -161,14 +159,10 @@ export class MainComponent implements OnInit {
   }
 
   createDemand() {
-    this.tagsService.saveTag({'name': this.formNewTag.value.tag, 'ministery_id': this.formNewTag.value.ministery.id}).subscribe((data:any) => {
+    this.tagsService.saveTag({'name': this.formNewTag.value.tag, 'ministery_id': this.formMinistery.value.ministery.id}).subscribe((data:any) => {
       this.tagDemand = data.id;
       this.tagsService.saveDemand({'email': this.formNewTag.value.email, 'tag_id': this.tagDemand, 'region_id': this.formNewTag.value.region.id}).subscribe((_data:any) => {
-        $('.modal').removeClass('in');
-        $('.modal').attr("aria-hidden","true");
-        $('.modal').css("display", "none");
-        $('.modal-backdrop').remove();
-        $('body').removeClass('modal-open');
+        this.formModal.hide();
         this.fireSuccessModal();
       });
     });
@@ -191,47 +185,28 @@ export class MainComponent implements OnInit {
     $('#my_canvas').animate({ opacity: 1 }, 400);
   }
 
-  getTagsAutocomplete() {
-    this.tagsAutocomplete = [];
-    if (this.formMinistery.value.ministery.id === 1) {
-      this.httpClient.get(this.globals.API_ENDPOINT + '/tag').subscribe((data:any) => {
-        for (let tag of data) {
-          this.tagsAutocomplete.push(tag.name);
-        }
-      });
-    } else {
-      this.httpClient.get(this.globals.API_ENDPOINT + '/tag/ministery/' + this.formNewTag.value.ministery.id).subscribe((data:any) => {
-        for (let tag of data) {
-          this.tagsAutocomplete.push(tag.name);
-        }
-      });
-    }
-  }
-
   fireSuccessModal() {
-    this.getTags();
-    this.formNewTag.controls['tag'].reset();
-    this.formNewTag.controls['ministery'].reset();
-    this.successSwal.fire()
-    .then((result) => {
-      if (result.value) {
-        $([document.documentElement, document.body]).animate({
-          scrollTop: $("#formNewTag").offset().top
-        }, 400);
-        $('#ministery').focus();
-      } else {
-        this.formNewTag.controls['email'].reset();
-        this.formNewTag.controls['region'].reset();
-        this.formNewTag.controls['ministery'].reset();
-        $([document.documentElement, document.body]).animate({
-          scrollTop: $("#infoMinistryTitle").offset().top
-        }, 400);
-      }
-    });
+    setTimeout(() => {
+      this.getTags();
+      this.formNewTag.controls['tag'].reset();
+      this.successSwal.fire()
+      .then((result) => {
+        if (result.value) {
+          $([document.documentElement, document.body]).animate({
+            scrollTop: $("#formNewTag").offset().top - 40
+          }, 400);
+          $('#ministery').focus();
+        }
+      });
+    }, 1000);
   }
 
-  prueba() {
-    console.log(this.formNewTag);
+  openFormModal() {
+    this.formModal.show();
+  }
+
+  closeFormModal() {
+    this.formModal.hide();
   }
 
   onFocused(): void {

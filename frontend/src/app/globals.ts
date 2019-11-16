@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class Globals {
-  // Local:
+  // LOCAL: Comentar Script de Google Analytics en index.html
   API_ENDPOINT: string = 'http://localhost:8000/api';
-  
-  // Production:
+
+  // PRODUCTION: Descomentar Script de Google Analytics en index.html y reCaptcha
   // API_ENDPOINT: string = 'https://api.tagit.cl/api';
 }
