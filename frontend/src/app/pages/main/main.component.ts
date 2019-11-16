@@ -1,19 +1,22 @@
 // Requisitos:
-// * Datos basicos de formulario salgan en un modal
-// * Terminar de estilar como el mockup
-// - Que el logo sea clickeable solo en la img
+// - Corregir errores actuales, como reseteo de form, modal no se oculta de manera optima
+// - Select debe pasar id a formNewTag, para evitar crear otro select
 // - Cuando cambio de ministerio, en el panel de lista, el wordcloud se tiene que ver
+// - Que el logo sea clickeable solo en la img
 // - Filtrar palabras ofensivas
 // - Tomar demanda y hacer pancarta para compartir
-// - Restricción por IP
 // - Que el correo pueda tener un solo voto por ministerio
-// - Despues de ingresar, se bugea un poco el boton propuesta y el formulario se ve mal
+// - Despues de ingresar, se bugea la pag en general, no actualiza info, botones, etc
+// - Compartir wsp no funciona en prod
+// - Ngautocomplete options se ven traspartenes, el boton de ingresar de trasluce
+// - Al llenar los datos el form se envia solo
 
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { FormBuilder, FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
 import { TagsService } from 'src/app/services/tags.service';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
+import { Globals } from 'src/app/globals';
 import * as WordCloud from 'wordcloud';
 import * as $ from 'jquery';
 @Component({
@@ -21,12 +24,11 @@ import * as $ from 'jquery';
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
-export class MainComponent {
+export class MainComponent implements OnInit {
 
   @ViewChild('successSwal', {static: false}) private successSwal: SwalComponent;
   @ViewChild( FormGroupDirective, {static: false}) myForm: any;
   @ViewChild('auto', {static: false}) auto: any;
-  API_ENDPOINT = 'https://api.tagit.cl/api';
   initialLoading = true;
   initialSelect = true;
 
@@ -46,29 +48,29 @@ export class MainComponent {
 
   constructor( public formBuilder: FormBuilder,
                private httpClient: HttpClient,
-               private tagsService: TagsService ) {
-                 this.httpClient.get(this.API_ENDPOINT + '/region').subscribe((data:any) => {
-                   this.regions = data;
-                 });
-                 this.httpClient.get(this.API_ENDPOINT + '/ministery').subscribe((data:any) => {
-                   this.ministeries = data;
-                   this.formMinistery.controls.ministery.setValue(this.ministeries[0]);
-                   this.getTags();
-                 });
-                 this.formMinistery = formBuilder.group({
-                   'ministery': new FormControl('', Validators.required)
-                 });
-                 this.formNewTag = formBuilder.group({
-                   'ministery': new FormControl('', Validators.required),
-                   'region': new FormControl('', Validators.required),
-                   'tag': new FormControl('', [Validators.required,
-                                               Validators.minLength(10),
-                                               Validators.maxLength(40)]),
-                   'email': new FormControl('', [Validators.required,
-                                                 Validators.pattern('[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}')
-                                               ]),
-                    'recaptchaReactive': new FormControl('', Validators.required)
-                 });
+               private tagsService: TagsService,
+               public globals: Globals) {
+  }
+
+  ngOnInit() {
+    this.httpClient.get(this.globals.API_ENDPOINT + '/region').subscribe((data:any) => {
+      this.regions = data;
+    });
+    this.httpClient.get(this.globals.API_ENDPOINT + '/ministery').subscribe((data:any) => {
+      this.ministeries = data;
+      this.formMinistery.controls.ministery.setValue(this.ministeries[0]);
+      this.getTags();
+    });
+    this.formMinistery = this.formBuilder.group({
+      'ministery': new FormControl('', Validators.required)
+    });
+    this.formNewTag = this.formBuilder.group({
+      'ministery': new FormControl('', Validators.required),
+      'region': new FormControl('', Validators.required),
+      'tag': new FormControl('', [Validators.required, Validators.minLength(10), Validators.maxLength(40)]),
+      'email': new FormControl('', [Validators.required, Validators.email]),
+      // 'recaptchaReactive': new FormControl('', Validators.required)
+    });
   }
 
   getTags() {
@@ -81,14 +83,14 @@ export class MainComponent {
     this.tags = [];
     $('#my_canvas').animate({ opacity: 0 }, 400);
     if (this.formMinistery.value.ministery.id === 1) {
-      this.httpClient.get(this.API_ENDPOINT + '/tag').subscribe((data:any) => {
+      this.httpClient.get(this.globals.API_ENDPOINT + '/tag').subscribe((data:any) => {
       for (let tag of data) {
           this.tags.push(tag.name);
       }
       this.getDemands();
       })
     } else {
-      this.httpClient.get(this.API_ENDPOINT + '/tag/ministery/' + this.formMinistery.value.ministery.id).subscribe((data:any) => {
+      this.httpClient.get(this.globals.API_ENDPOINT + '/tag/ministery/' + this.formMinistery.value.ministery.id).subscribe((data:any) => {
         for (let tag of data) {
           this.tags.push(tag.name);
         }
@@ -102,7 +104,7 @@ export class MainComponent {
     this.sumCount = 0;
     this.sumRows = 0;
     if (this.formMinistery.value.ministery.id === 1) {
-      this.httpClient.get(this.API_ENDPOINT + '/demand').subscribe((data:any) => {
+      this.httpClient.get(this.globals.API_ENDPOINT + '/demand').subscribe((data:any) => {
         this.demands = data;
         for (let item of this.demands) {
           this.sumCount = this.sumCount + item.count;
@@ -113,7 +115,7 @@ export class MainComponent {
         this.createCanvas();
       });
     } else {
-      this.httpClient.get(this.API_ENDPOINT + '/demand/ministery/' + this.formMinistery.value.ministery.id).subscribe((data:any) => {
+      this.httpClient.get(this.globals.API_ENDPOINT + '/demand/ministery/' + this.formMinistery.value.ministery.id).subscribe((data:any) => {
         this.demands = data;
         for (let item of this.demands) {
           this.sumCount = this.sumCount + item.count;
@@ -192,13 +194,13 @@ export class MainComponent {
   getTagsAutocomplete() {
     this.tagsAutocomplete = [];
     if (this.formMinistery.value.ministery.id === 1) {
-      this.httpClient.get(this.API_ENDPOINT + '/tag').subscribe((data:any) => {
+      this.httpClient.get(this.globals.API_ENDPOINT + '/tag').subscribe((data:any) => {
         for (let tag of data) {
           this.tagsAutocomplete.push(tag.name);
         }
       });
     } else {
-      this.httpClient.get(this.API_ENDPOINT + '/tag/ministery/' + this.formNewTag.value.ministery.id).subscribe((data:any) => {
+      this.httpClient.get(this.globals.API_ENDPOINT + '/tag/ministery/' + this.formNewTag.value.ministery.id).subscribe((data:any) => {
         for (let tag of data) {
           this.tagsAutocomplete.push(tag.name);
         }
@@ -226,6 +228,10 @@ export class MainComponent {
         }, 400);
       }
     });
+  }
+
+  prueba() {
+    console.log(this.formNewTag);
   }
 
   onFocused(): void {

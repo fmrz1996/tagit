@@ -27,10 +27,11 @@ class TagController extends Controller
     {
       $tag = Tag::where('name', $request['name'])->first();
       if(!$tag) {
-        return Tag::create([
+        Tag::create([
           'name' => $request['name'],
           'ministery_id' => $request['ministery_id'],
         ]);
+        return response()->json('ok');
       } else {
         return $tag;
       }

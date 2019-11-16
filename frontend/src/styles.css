@@ -15,11 +15,11 @@ header .navbar {
 }
 
 .header-rrss a {
-  opacity: 0.8;
+  opacity: 1;
 }
 
 .header-rrss a:hover {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .modal-header .close {
@@ -28,6 +28,16 @@ header .navbar {
   margin: 0;
   top: 16px;
   right: 16px;
+  opacity: 1;
+}
+
+.modal-header .close:hover {
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  top: 16px;
+  right: 16px;
+  opacity: 0.8;
 }
 
 .modal-dialog {
@@ -47,6 +57,10 @@ footer p,
 .header-logo h1 {
   font-family: 'Roboto Condensed', sans-serif;
   font-size: 26px;
+}
+
+.header-logo {
+  flex-direction: column;
 }
 
 .loading {
@@ -98,11 +112,11 @@ footer p {
 #btn-infoModal {
   position: absolute;
   right: 40px;
-  opacity: 0.8;
+  opacity: 1;
 }
 
 #btn-infoModal:hover {
-  opacity: 1;
+  opacity: 0.8;
 }
 
 .table-info {

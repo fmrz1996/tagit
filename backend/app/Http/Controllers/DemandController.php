@@ -29,11 +29,14 @@ class DemandController extends Controller
      */
     public function store(Request $request)
     {
-      return Demand::create([
+      Demand::create([
         'email' => $request['email'],
         'tag_id' => $request['tag_id'],
         'region_id' => $request['region_id'],
+        'ip' => $request->ip()
       ]);
+
+      return response()->json('ok');
     }
 
     public function showByMinistery($id)
