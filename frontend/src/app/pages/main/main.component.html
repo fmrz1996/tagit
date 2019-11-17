@@ -38,41 +38,28 @@
         <div class="col-lg-8 col-md-12">
           <div *ngIf="formMinistery.controls.ministery.status === 'VALID'" class="container pt-2">
             <h3 id="infoDemandsTitle" class="text-center font-weight-bold">Propuestas sociales de la gente</h3>
-            <ul class="nav nav-tabs justify-content-center mt-3" id="myTab" role="tablist">
-              <li class="nav-item">
-                <a class="nav-link active" id="wordcloud-tab" data-toggle="tab" href="#wordcloud" role="tab" aria-controls="wordcloud" aria-selected="true">Wordcloud</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" id="list-tab" data-toggle="tab" href="#list" role="tab" aria-controls="list" aria-selected="false">Lista Top 10</a>
-              </li>
-              <button id="btn-infoModal" type="button" class="btn" data-toggle="modal" data-target="#infoModal"><img src="assets/icono-info.svg"></button>
-            </ul>
-            <div class="tab-content" id="myTabContent">
-              <div class="tab-pane show active" id="wordcloud" role="tabpanel" aria-labelledby="wordcloud-tab">
-                <div class="row">
-                  <div class="col-12">
-                    <div id="word-cloud">
-                      <canvas id="my_canvas" class="canvas d-block mx-auto"></canvas>
-                    </div>
+              <tabset id="myTab">
+                <tab heading="Wordcloud" id="wordcloud" (selectTab)="runTags()">
+                  <div id="word-cloud">
+                    <canvas id="my_canvas" class="canvas d-block mx-auto"></canvas>
                   </div>
-                </div>
-              </div>
-              <div class="tab-pane" id="list" role="tabpanel" aria-labelledby="list-tab">
-                <table class="table table-hover table-sm">
-                  <tbody>
-                    <tr class="table-info-ministery">
-                      <th>Propuestas sociales</th>
-                      <th class="text-right">Menciones</th>
-                    </tr>
-                    <tr *ngFor="let demand of demands">
-                      <td class="font-italic">{{ demand.name }}</td>
-                      <td class="font-italic text-right">{{ demand.count }}</td>
-                    </tr>
-                    <tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
+                </tab>
+                <tab #tabList heading="Lista Top 10" id="list">
+                  <table class="table table-hover table-sm">
+                    <tbody>
+                      <tr class="table-info-ministery">
+                        <th>Propuestas sociales</th>
+                        <th class="text-right">Menciones</th>
+                      </tr>
+                      <tr *ngFor="let demand of demands">
+                        <td class="font-italic">{{ demand.name }}</td>
+                        <td class="font-italic text-right">{{ demand.count }}</td>
+                      </tr>
+                      <tr>
+                      </tbody>
+                    </table>
+                </tab>
+              </tabset>
           </div>
         </div>
       </div>
@@ -114,8 +101,8 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title text-primary text-center font-weight-bold mx-auto" id="exampleModalLongTitle">Añade tu propuesta social</h4>
-          <button type="button" class="close" (click)="closeFormModal()">
+          <h4 class="modal-title text-primary text-center font-weight-bold mx-auto" id="exampleModalLongTitle">Añade tu propuesta social para:<h6 class="text-primary font-weight-bold">{{ formMinistery.value.ministery.name }}</h6></h4>
+          <button type="button" class="btn btn-icon close" (click)="closeFormModal()">
             <img src="assets/icono-close.svg">
           </button>
         </div>
@@ -160,7 +147,12 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button [disabled]="formNewTag.invalid" type="submit" class="btn btn-primary d-block mx-auto rounded-xl">Ingresar</button>
+          <button [disabled]="formNewTag.invalid || submitLoading" type="submit" class="btn btn-primary d-block mx-auto rounded-xl">
+            <div *ngIf="submitLoading" class="spinner-border text-white loading-form" style="width: 1rem; height: 1rem;" role="status">
+              <span class="sr-only">Loading...</span>
+            </div>
+            {{ submitPlaceholder }}
+          </button>
         </div>
       </form>
       </div>
@@ -171,7 +163,7 @@
       <div class="modal-content text-dark">
         <div class="modal-header">
           <h4 class="modal-title text-primary text-center font-weight-bold mx-auto" id="infoModalLabel">¡Somos Tagit!</h4>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <button type="button" class="btn btn-icon close" data-dismiss="modal" aria-label="Close">
             <img src="assets/icono-close.svg">
           </button>
         </div>

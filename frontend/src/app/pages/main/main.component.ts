@@ -1,11 +1,10 @@
 // Requisitos:
-// - Autocomplete no muestra sugerencias despues de un ingreso
-// - Cuando cambio de ministerio, en el panel de lista, el wordcloud se tiene que ver
 // - Filtrar palabras ofensivas
 // - Tomar demanda y hacer pancarta para compartir
 // - Que el correo pueda tener un solo voto por ministerio
-// - Background se ve espacio en blanco con el modal
-// - Probar con varios votos
+// - Busqueda sensible autocomplete
+// - Lograr que el titulo de ministerio no quede tan largo
+// - En Mac no se ve la fuente del wordcloud designada
 
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -13,9 +12,10 @@ import { FormBuilder, FormGroup, FormControl, Validators, FormGroupDirective } f
 import { TagsService } from 'src/app/services/tags.service';
 import { SwalComponent } from '@sweetalert2/ngx-sweetalert2';
 import { Globals } from 'src/app/globals';
+import { ModalDirective } from 'ngx-bootstrap/modal';
+import { TabsetComponent } from 'ngx-bootstrap/tabs';
 import * as WordCloud from 'wordcloud';
 import * as $ from 'jquery';
-import { ModalDirective } from 'ngx-bootstrap/modal';
 
 @Component({
   selector: 'app-main',
@@ -28,9 +28,9 @@ export class MainComponent implements OnInit {
   @ViewChild( FormGroupDirective, {static: false}) myForm: any;
   @ViewChild('auto', {static: false}) auto: any;
   @ViewChild('formModal', {static: false}) public formModal: ModalDirective;
-  initialLoading = true;
-  initialSelect = true;
+  @ViewChild(TabsetComponent, {static: false}) public tabset: TabsetComponent;
 
+  initialLoading:boolean = true;
   formMinistery: FormGroup;
   formNewTag: FormGroup;
   ministeries: any = [];
@@ -43,6 +43,9 @@ export class MainComponent implements OnInit {
   sumCount: number;
   sumRows: number;
   factorMultiple: number;
+  activedListTab: boolean = false;
+  submitPlaceholder: string = "Ingresar";
+  submitLoading: boolean = false;
 
   constructor( public formBuilder: FormBuilder,
                private httpClient: HttpClient,
@@ -72,12 +75,6 @@ export class MainComponent implements OnInit {
   }
 
   getTags() {
-    if(!this.initialSelect) {
-      $([document.documentElement, document.body]).animate({
-        scrollTop: $("#ministery").offset().top - 40
-      }, 400);
-    }
-    this.initialSelect = false;
     this.tags = [];
     $('#my_canvas').animate({ opacity: 0 }, 400);
     if (this.formMinistery.value.ministery.id === 1) {
@@ -85,6 +82,7 @@ export class MainComponent implements OnInit {
       for (let tag of data) {
           this.tags.push(tag.name);
       }
+      this.checkActivedTab();
       this.getDemands();
       })
     } else {
@@ -92,9 +90,11 @@ export class MainComponent implements OnInit {
         for (let tag of data) {
           this.tags.push(tag.name);
         }
+        this.checkActivedTab();
         this.getDemands();
       })
     }
+    this.initialLoading = false;
   }
 
   getDemands() {
@@ -155,10 +155,11 @@ export class MainComponent implements OnInit {
         this.createCanvas();
       })
     }
-    this.initialLoading = false;
   }
 
   createDemand() {
+    this.submitPlaceholder = "Ingresando...";
+    this.submitLoading = true;
     this.tagsService.saveTag({'name': this.formNewTag.value.tag, 'ministery_id': this.formMinistery.value.ministery.id}).subscribe((data:any) => {
       this.tagDemand = data.id;
       this.tagsService.saveDemand({'email': this.formNewTag.value.email, 'tag_id': this.tagDemand, 'region_id': this.formNewTag.value.region.id}).subscribe((_data:any) => {
@@ -180,7 +181,8 @@ export class MainComponent implements OnInit {
           return Math.pow(size, 1) * $('#my_canvas').width() / 300;
         },
         rotateRatio: 0,
-        fontFamily: 'Gill Sans MT'
+        fontFamily: 'Gill Sans MT',
+        minSize: 8
     });
     $('#my_canvas').animate({ opacity: 1 }, 400);
   }
@@ -189,6 +191,8 @@ export class MainComponent implements OnInit {
     setTimeout(() => {
       this.getTags();
       this.formNewTag.controls['tag'].reset();
+      this.submitPlaceholder = "Ingresar";
+      this.submitLoading = false;
       this.successSwal.fire()
       .then((result) => {
         if (result.value) {
@@ -198,7 +202,7 @@ export class MainComponent implements OnInit {
           $('#ministery').focus();
         }
       });
-    }, 1000);
+    }, 200);
   }
 
   openFormModal() {
@@ -215,5 +219,20 @@ export class MainComponent implements OnInit {
 
   onCleared(): void {
     this.auto.close();
+  }
+
+  checkActivedTab() {
+    let activeTab = this.tabset.tabs.filter(tab => tab.active);
+    if (activeTab[0].id === "list") {
+      this.activedListTab = true;
+    } else {
+      this.activedListTab = false;
+    }
+  }
+
+  runTags() {
+    if (this.activedListTab == true) {
+      this.getTags();
+    }
   }
 }
