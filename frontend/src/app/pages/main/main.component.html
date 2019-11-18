@@ -44,7 +44,7 @@
                     <canvas id="my_canvas" class="canvas d-block mx-auto"></canvas>
                   </div>
                 </tab>
-                <tab #tabList heading="Lista Top 10" id="list">
+                <tab heading="Lista Top 10" id="list">
                   <table class="table table-hover table-sm">
                     <tbody>
                       <tr class="table-info-ministery">
@@ -60,6 +60,7 @@
                     </table>
                 </tab>
               </tabset>
+              <button id="btn-infoModal" type="button" class="btn" data-toggle="modal" data-target="#infoModal"><img src="assets/icono-info.svg"></button>
           </div>
         </div>
       </div>
@@ -111,18 +112,26 @@
             <div class="row">
               <div class="col-12">
                 <div class="form-group">
-                  <label for="region">Selecciona tu región:</label>
+                  <label for="region">Selecciona tu región *:</label>
                   <select class="form-control" formControlName="region" id="region">
                     <option value="" hidden selected>Seleciona una región</option>
                     <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
                   </select>
                 </div>
-                <div class="form-group">
-                  <label for="tag">Ingresa tu email:</label>
-                  <input class="form-control" type="text" id="email" formControlName="email" placeholder="Escribe tu email" required>
+                <div *ngIf="formNewTag.get('region').invalid && formNewTag.get('region').touched"
+                  class="font-weight-bold text-danger small mb-3">
+                  * Seleccione una región valida.
                 </div>
                 <div class="form-group">
-                  <label for="tag">Ingresa tu propuesta <span class="text-muted">(máximo 4 palabras, 10-40 caracteres)</span>:</label>
+                  <label for="tag">Ingresa tu email *:</label>
+                  <input class="form-control" type="text" id="email" formControlName="email" placeholder="Escribe tu email" required>
+                </div>
+                <div *ngIf="formNewTag.get('email').invalid && formNewTag.get('email').touched"
+                  class="font-weight-bold text-danger small mb-3">
+                  * Ingrese un email válido.
+                </div>
+                <div class="form-group">
+                  <label for="tag">Ingresa tu propuesta <span class="text-muted">(máximo 4 palabras, 10-40 caracteres)</span> *:</label>
                   <div class="ng-autocomplete">
                     <ng-autocomplete
                     #auto
@@ -138,6 +147,15 @@
                   <ng-template #itemTemplate let-item>
                     <a [innerHTML]="item"></a>
                   </ng-template>
+                </div>
+              </div>
+              <div *ngIf="formNewTag.get('tag').invalid && formNewTag.get('tag').dirty"
+                class="font-weight-bold text-danger small">
+                <div *ngIf="formNewTag.get('tag').errors.minlength">
+                  * La propuesta debe tener como mínimo 10 caracteres.
+                </div>
+                <div *ngIf="formNewTag.get('tag').errors.maxlength">
+                  * La propuesta debe tener como máximo 40 caracteres.
                 </div>
               </div>
               <!-- <div class="form-group">

@@ -114,6 +114,7 @@ footer p {
 
 #btn-infoModal {
   position: absolute;
+  top: 65px;
   right: 40px;
   opacity: 1;
 }
@@ -183,7 +184,8 @@ footer p {
   max-width: 48px;
 }
 
-.btn-icon:focus {
+.btn-icon:focus,
+#btn-infoModal {
   outline: 0;
   box-shadow: none;
 }
@@ -223,7 +225,8 @@ footer p {
   }
 
   #btn-infoModal {
-    position: static;
+    top: 255px;
+    right: 35px;
   }
 
   #myTabContent {
